@@ -1,0 +1,32 @@
+{
+  "name": "jriviere-windows_ad",
+  "version": "0.0.3",
+  "source": "https://github.com/ninja-2/windows_ad",
+  "author": "Jérôme RIVIERE",
+  "license": "Apache License, Version 2.0",
+  "summary": "Puppet module to install and configure a windows DC 2012 R2 ",
+  "description": "Puppet module to install and configure a windows DC 2012 R2 ",
+  "project_page": "https://github.com/ninja-2/windows_ad",
+  "dependencies": [
+    {
+      "name": "joshcooper/powershell",
+      "version_requirement": ">=0.0.6"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.2.1"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "Modulefile": "61c9028320eb4249d605b49d44b03a48",
+    "README": "dd4f7bd0a1400f9521e0e82ce317dda4",
+    "manifests/conf_forest.pp": "0f9add0ca19839e1230bb6ab608775d7",
+    "manifests/init.pp": "fd4a78165db96d037e0767d2d882f51a",
+    "manifests/install.pp": "3788e2df8763f33606b13c41fae574ce",
+    "spec/spec_helper.rb": "09ccbe4bbe4503df6281e6ec7977973d",
+    "tests/init.pp": "ef9d5695a325a402570138b948c9d582"
+  }
+}
