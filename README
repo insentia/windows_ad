@@ -1,8 +1,9 @@
-windows_ad
+#windows_ad
 
 This is the windows_ad module for puppet
 
 ##Introduction
+
 This is the windows_ad module.
 Inspired from opentable/windows_feature puppet module and from martezr/windows_domain_controller puppet module
 
