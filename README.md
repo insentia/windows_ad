@@ -51,6 +51,7 @@ Class: windows_ad
 ```	
 
 Parameters:
+```	
 	$install              # Present or absent -> install/desinstall ADDS role
 	$configure            # Present or absent -> configure/remove a Domain Controller
 	$domainname           # name of domain you must install FQDN
@@ -62,7 +63,8 @@ Parameters:
 	$logpath              # Active Directory log path
 	$sysvolpath           # Active Directory sysvol path
 	$dsrmpassword         # Directory Service Recovery Mode password
-
+```	
+	
 ## Install
 
 To install the module correctly, run the following
