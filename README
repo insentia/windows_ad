@@ -1,10 +1,10 @@
 windows_ad
 
-This is the windows_ad module.
+This is the windows_ad module for puppet
 
 ##Introduction
 This is the windows_ad module.
-Inspired from opentable/windows_feature module and from martezr/windows_domain_controller 
+Inspired from opentable/windows_feature puppet module and from martezr/windows_domain_controller puppet module
 
 This module permit you to install a Windows AD Domain controller on a Windows Server.
 
