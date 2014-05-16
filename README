@@ -1,12 +1,9 @@
-#windows_ad
+windows_ad
 =====================
-<<<<<<< HEAD
-=======
 
->>>>>>> 80e48f7f5f7d0f2437c58e59d622cc281beda674
 This is the windows_ad module for puppet
 
-##Introduction
+## Introduction
 
 This is the windows_ad module.
 Inspired from opentable/windows_feature puppet module and from martezr/windows_domain_controller puppet module
@@ -16,18 +13,18 @@ This module permit you to install a Windows AD Domain controller on a Windows Se
 
 This module have been tested on Windows Server 2012 r2, should work on Windows Server since 2008 R2.
 
-##Module Description
+## Module Description
 
 For now, the module only allow the creation of new domain, in a new forest.
 
 
-###Setup Requirements
+### Setup Requirements
  
 Depends on the following modules:
 'joshcooper/powershell', '>=0.0.6'
 'puppetlabs/stdlib', '>= 4.2.1'
 
-##Usage
+## Usage
 
 Class: windows_ad
 ```
@@ -67,17 +64,7 @@ Parameters:
   
   $localadminpassword   # password of local admin for remove DC.
   
-  Other parameters can be set Check the init.pp in manifests folder. 
-
-License
--------
-Apache License, Version 2.0
-
-Contact
--------
-Jerome RIVIERE
-
-Support
--------
-
-Please log tickets and issues at our [Projects site](https://github.com/ninja-2/windows_ad)
+  Other parameters can be set Check the init.pp in manifests folder.
+  
+## License
+- Apache License, Version 2.0
