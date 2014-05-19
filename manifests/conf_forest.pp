@@ -1,27 +1,30 @@
 class windows_ad::conf_forest (
-  $ensure             = 'present',
-  $domainname         = $domainname,
-  $netbiosdomainname  = $netbiosdomainname,
-  $domainlevel        = $domainlevel,
-  $forestlevel        = $forestlevel,
-  $globalcatalog      = $globalcatalog,
-  $databasepath       = $databasepath,
-  $logpath            = $logpath,
-  $sysvolpath         = $sysvolpath,
-  $dsrmpassword       = $dsrmpassword,
-  $installdns         = $installdns,
-  $kernel_ver         = $kernel_ver,
-  $timeout            = 0,
+  #install parameters
+  $ensure                    = $ensure,
+  $domainname                = $domainname,
+  $netbiosdomainname         = $netbiosdomainname,
+  $domainlevel               = $domainlevel,
+  $forestlevel               = $forestlevel,
+  $globalcatalog             = $globalcatalog,
+  $databasepath              = $databasepath,
+  $logpath                   = $logpath,
+  $sysvolpath                = $sysvolpath,
+  $dsrmpassword              = $dsrmpassword,
+  $installdns                = $installdns,
+  $kernel_ver                = $kernel_ver,
+  $timeout                   = 0,
   
-  #removal
-  $localadminpassword = undef, #admin password required for removal
-  $force              = $force,
-  $forceremoval       = $forceremoval,
-  $uninstalldnsrole   = $uninstalldnsrole,
+  #removal parameters
+  $localadminpassword        = $localadminpassword, #admin password required for removal
+  $force                     = $force,
+  $forceremoval              = $forceremoval,
+  $uninstalldnsrole          = $uninstalldnsrole,
+  $demoteoperationmasterrole = $demoteoperationmasterrole,
 ) {
   if $force { $_force = 'true' } else { $_force = 'false' }
   if $forceremoval { $_forceremoval = 'true' } else { $_forceremoval = 'false' }
-
+  if $demoteoperationmasterrole { $_demoteoperationmasterrole = 'true' } else { $_demoteoperationmasterrole = 'false' }
+  
   # If the operating is server 2012 then run the appropriate powershell commands if not revert back to the cmd commands
   if ($ensure == 'present') {  
     if ($kernel_ver =~ /^6\.2|^6\.3/) {
@@ -30,7 +33,7 @@ class windows_ad::conf_forest (
         exec { 'Config ADDS':
           command     => "Import-Module ADDSDeployment; Install-ADDSForest -Force -DomainName ${domainname} -DomainMode ${domainlevel} -DomainNetbiosName ${netbiosdomainname} -ForestMode ${forestlevel} -DatabasePath ${databasepath} -LogPath ${logpath} -SysvolPath ${sysvolpath} -SafeModeAdministratorPassword (convertto-securestring '${dsrmpassword}' -asplaintext -force) -InstallDns",
           provider    => powershell,
-          onlyif      => '$_domain = (gwmi WIN32_ComputerSystem).Domain;if ($_domain -ne ${domainname}){exit 1}',
+          onlyif      => "if((gwmi WIN32_ComputerSystem).Domain -eq \'${domainname}\'){exit 1}",
           timeout     => $timeout,
         }
       }
@@ -39,7 +42,7 @@ class windows_ad::conf_forest (
         exec { 'Config ADDS':
           command     => "Import-Module ADDSDeployment; Install-ADDSForest -Force -DomainName ${domainname} -DomainMode ${domainlevel} -DomainNetbiosName ${netbiosdomainname} -ForestMode ${forestlevel} -DatabasePath ${databasepath} -LogPath ${logpath} -SysvolPath ${sysvolpath} -SafeModeAdministratorPassword (convertto-securestring '${dsrmpassword}' -asplaintext -force)",
           provider    => powershell,
-          onlyif      => '$_domain = (gwmi WIN32_ComputerSystem).Domain;if ($_domain -ne ${domainname}){exit 1}',
+          onlyif      => "if((gwmi WIN32_ComputerSystem).Domain -eq \'${domainname}\'){exit 1}",
           timeout     => $timeout,
         }
       }
@@ -54,18 +57,20 @@ class windows_ad::conf_forest (
     }
   }else{ #uninstall AD
     if ($kernel_ver =~ /^6\.2|^6\.3/) {
+	  if($localadminpassword != ''){
       exec { 'Uninstall ADDS':
-        command     => "Import-Module ServerManager;Import-Module ADDSDeployment; Uninstall-ADDSDomainController -LocalAdministratorPassword (convertto-securestring '${localadminpassword}' -asplaintext -force) -Force:$${_force} -ForceRemoval:$${_forceremoval} -DemoteOperationMasterRole:\$true -SkipPreChecks",
+        command     => "Import-Module ADDSDeployment;Uninstall-ADDSDomainController -LocalAdministratorPassword (ConvertTo-SecureString \'${localadminpassword}\' -asplaintext -force) -Force:$${_force} -ForceRemoval:$${_forceremoval} -DemoteOperationMasterRole:$${_demoteoperationmasterrole} -SkipPreChecks",
         provider    => powershell,
-        onlyif      => "$_domain = (gwmi WIN32_ComputerSystem).Domain;if ($_domain -eq ${domainname}){exit 1}",
+        onlyif      => "if((gwmi WIN32_ComputerSystem).Domain -eq 'WORKGROUP'){exit 1}",
         timeout     => $timeout,
       }
       if($uninstalldnsrole == 'yes'){
 	    exec { 'Uninstall DNS Role':
-          command   => "Import-Module ServerManager; Remove-WindowsFeature DNS -Restart:\$true",
+          command   => "Import-Module ServerManager; Remove-WindowsFeature DNS -Restart",
           onlyif    => "Import-Module ServerManager; if (@(Get-WindowsFeature DNS | ?{\$_.Installed -match \'true\'}).count -eq 0) { exit 1 }",
           provider  => powershell,
         }
+      }
       }
     }else{
       # uninstall Server 2008 R2 Active Directory -not tested
