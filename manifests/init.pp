@@ -1,6 +1,14 @@
-##
-##
-##
+#
+# Help can be found in readme.rd for a global help
+#
+# === Authors
+#
+# Jerome RIVIERE (www.jerome-riviere.re)
+#
+# === Copyright
+#
+# Copyright 2014 Jerome RIVIERE.
+#
 class windows_ad (
   ### part install AD
   $install                   = 'present',
@@ -33,16 +41,16 @@ class windows_ad (
 
   #uninstall forest
   $localadminpassword        = undef,
-  $force                     = 'true',
-  $forceremoval              = 'true',
+  $force                     = true,
+  $forceremoval              = true,
   $uninstalldnsrole          = 'yes',
-  $demoteoperationmasterrole = 'true',
-  
+  $demoteoperationmasterrole = true,
+
   ### Part Configure AD - Other
   $secure_string_pwd         = undef,
-  $installtype               = undef,          # New domain or replica of existing domain {replica | domain} 
+  $installtype               = undef,          # New domain or replica of existing domain {replica | domain}
   $domaintype                = undef,          # Type of domain {Tree | Child | Forest} (New domain tree in an existing forest, child domain, or new forest)
-  $sitename                  = undef,          # Site Name 
+  $sitename                  = undef,          # Site Name
 
 ) {
 
@@ -53,14 +61,14 @@ class windows_ad (
   # absent don't do anything right now
   validate_re($configure, '^(present|absent)$', 'valid values for configure are \'present\' or \'absent\'')
 
-  class{'windows_ad::install': 
+  class{'windows_ad::install':
     ensure                 => $install,
-	installmanagementtools => $installmanagementtools,
-	installsubfeatures     => $installsubfeatures,
-	restart                => $restart,
+    installmanagementtools => $installmanagementtools,
+    installsubfeatures     => $installsubfeatures,
+    restart                => $restart,
   }
-  
-  class{'windows_ad::conf_forest': 
+
+  class{'windows_ad::conf_forest':
     ensure                    => $configure,
     domainname                => $domainname,
     netbiosdomainname         => $netbiosdomainname,
@@ -73,12 +81,13 @@ class windows_ad (
     dsrmpassword              => $dsrmpassword,
     installdns                => $installdns,
     kernel_ver                => $kernel_ver,
-	localadminpassword        => $localadminpassword,
+    localadminpassword        => $localadminpassword,
     force                     => $force,
     forceremoval              => $forceremoval,
     uninstalldnsrole          => $uninstalldnsrole,
-	demoteoperationmasterrole => $demoteoperationmasterrole,
+    demoteoperationmasterrole => $demoteoperationmasterrole,
   }
+
   if($install == 'present'){
     Class['windows_ad::install'] -> Class['windows_ad::conf_forest']
   }else{
@@ -88,5 +97,4 @@ class windows_ad (
       Class['windows_ad::conf_forest'] -> Class['windows_ad::install']
     }
   }
-  
 }

@@ -1,3 +1,30 @@
+# Class: windows_ad
+#
+# Full description of windows_ad::install here.
+#
+# This class allow you to install/uninstall a windows domain services roles ADDS
+#
+# When you use this class please use it with windows_ad directly. see the readme file.
+#
+# === Parameters
+#
+#
+# === Examples
+#
+#  class {'windows_ad::install':
+#  install                => present,
+#  installmanagementtools => true,
+#  installsubfeatures     => true,
+#  restart                => true,
+#
+# === Authors
+#
+# Jerome RIVIERE (www.jerome-riviere.re)
+#
+# === Copyright
+#
+# Copyright 2014 Jerome RIVIERE.
+#
 class windows_ad::install (
     $ensure = $ensure,
     $installmanagementtools = $installmanagementtools,
@@ -11,13 +38,13 @@ class windows_ad::install (
   validate_bool($restart)
 
   if $::operatingsystem != 'windows' { fail ("${module_name} not supported on ${::operatingsystem}") }
-  if $restart { $_restart = 'true' } else { $_restart = 'false' }
-  if $installsubfeatures { $_installsubfeatures = '-IncludeAllSubFeature' }
+  if $restart { $restartbool = 'true' } else { $restartbool = 'false' }
+  if $installsubfeatures { $subfeatures = '-IncludeAllSubFeature' }
 
   if $::kernelversion =~ /^(6.1)/ and $installmanagementtools {
     fail ('Windows 2012 or newer is required to use the installmanagementtools parameter')
   } elsif $installmanagementtools {
-    $_installmanagementtools = '-IncludeManagementTools'
+    $managementtools = '-IncludeManagementTools'
   }
 
   # Windows 2008 R2 and newer required http://technet.microsoft.com/en-us/library/ee662309.aspx
@@ -28,13 +55,13 @@ class windows_ad::install (
     if $::kernelversion =~ /^(6.1)/ { $command = 'Add-WindowsFeature' } else { $command = 'Install-WindowsFeature' }
 
     exec { "add-feature-${title}":
-      command   => "Import-Module ServerManager; ${command} AD-Domain-Services ${_installmanagementtools} ${_installsubfeatures} -Restart:$${_restart}",
+      command   => "Import-Module ServerManager; ${command} AD-Domain-Services ${managementtools} ${subfeatures} -Restart:$${restartbool}",
       onlyif    => "Import-Module ServerManager; if (@(Get-WindowsFeature AD-Domain-Services | ?{\$_.Installed -match \'false\'}).count -eq 0) { exit 1 }",
       provider  => powershell,
     }
   } elsif ($ensure == 'absent') {
     exec { "remove-feature-${title}":
-      command   => "Import-Module ServerManager; Remove-WindowsFeature AD-Domain-Services -Restart:$${_restart}",
+      command   => "Import-Module ServerManager; Remove-WindowsFeature AD-Domain-Services -Restart:$${restartbool}",
       onlyif    => "Import-Module ServerManager; if (@(Get-WindowsFeature AD-Domain-Services | ?{\$_.Installed -match \'true\'}).count -eq 0) { exit 1 }",
       provider  => powershell,
     }

@@ -1,11 +1,11 @@
 {
   "name": "jriviere-windows_ad",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "source": "https://github.com/ninja-2/windows_ad",
   "author": "Jérôme RIVIERE www.jeroée-riviere.re",
   "license": "Apache License, Version 2.0",
-  "summary": "Puppet module to install and configure a windows DC 2012 R2 ",
-  "description": "Puppet module to install and configure a windows DC 2012 R2 ",
+  "summary": "Puppet module to install and configure a Windows DC (2012 R2) and manipulate object in Active directory ",
+  "description": "Puppet module to install and configure a Windows Domain Controller (2012 R2) and manipulate object in Active directory",
   "project_page": "https://github.com/ninja-2/windows_ad",
   "dependencies": [
     {
@@ -21,11 +21,14 @@
 
   ],
   "checksums": {
-    "Modulefile": "e3773805e22a6f7e0f314c6f40cde869",
-    "README.md": "3c5afeb5af900ecaf1ce2991269d302d",
-    "manifests/conf_forest.pp": "b9814650e777e7b84133515d527c2f4b",
-    "manifests/init.pp": "a5c7024b1e49196c86de15018285aa0f",
-    "manifests/install.pp": "11ccd86fa123f5100eb8c2fbfe09f763",
+    "Modulefile": "5041ec01c12fd1cc2e923fcf486d7124",
+    "README.md": "3914488d9f7ea2468ca87daf9ba8a776",
+    "manifests/conf_forest.pp": "a3ce1506d95499c73d267ad62a1e8541",
+    "manifests/init.pp": "92996e29f3fb12eaeaa9e3c6a9a0924b",
+    "manifests/install.pp": "bc86c14aae93d3618e50996d9e57d535",
+    "manifests/organisationalunit.pp": "fbfe42af66b4dd63bdb78526f40f5294",
+    "manifests/user.pp": "5bbbc95f2e939300651031ee301b34a7",
+    "manifests/users.pp": "2a5508c2f4ec4dac68aef289a3e69936",
     "spec/spec_helper.rb": "09ccbe4bbe4503df6281e6ec7977973d",
     "tests/init.pp": "ef9d5695a325a402570138b948c9d582"
   }
