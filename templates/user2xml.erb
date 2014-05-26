@@ -1,0 +1,40 @@
+<%=
+require 'rexml/document'
+
+if (File.size?('C:\\users.xml') != nil)
+  file = File.new('C:\\users.xml')
+  doc = REXML::Document.new file
+  root = doc.root
+  users = root.elements["users"]
+
+  exist = false
+  usertomodify = ''
+
+  users.elements.each do | user |
+    name = user.attributes['name']
+    if (name == @accountname)
+      exist = true
+	  if(@ensure == 'absent')
+        users.delete_element(user)
+        doc.write(File.open("C:\\users.xml","w"), 2)
+      else
+        usertomodify = user
+      end
+    end
+  end
+  if(@ensure == 'present')
+    if(exist == false)
+      useritem = users.add_element('user')
+      account = useritem.add_attribute("name", @accountname)
+      password = useritem.add_attribute("password", @pwd)
+      doc.write(File.open("C:\\users.xml","w"), 2)
+    else
+      if(@modify == true)
+        usertomodify.delete_attribute("password")
+        password = usertomodify.add_attribute("password", @pwd)
+        doc.write(File.open("C:\\users.xml","w"), 2)
+      end
+    end
+  end
+end
+%>

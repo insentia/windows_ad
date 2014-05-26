@@ -67,6 +67,8 @@ define windows_ad::users(
       passwordneverexpires => $user['passwordneverexpires'],
       passwordlength       => $user['passwordlength'],
       enabled              => $user['enabled'],
+      password             => $user['password'],
+      confirmdeletion      => $user['confirmdeletion'],
     }
   }
 }

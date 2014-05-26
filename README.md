@@ -1,14 +1,14 @@
 windows_ad
 
-This is the windows_ad module.
+This is the windows_ad puppet module.
 
 ##Introduction
-This is the windows_ad module.
+This is the windows_ad puppet module.
 Inspired from [opentable/windows_feature](https://forge.puppetlabs.com/opentable/windows_feature) module and from [martezr/windows_domain_controller](https://forge.puppetlabs.com/martezr/windows_domain_controller) for the installation and configuration of a windows domain
 
 This module have two main roles : 
 - Install & configure AD
-- Manage Users/OU in your Active Directory
+- Manage Users/OU/Groups in your Active Directory
 
 
 This module permit you to install a Windows AD Domain controller on a Windows Server.
@@ -20,9 +20,12 @@ Moreover, it allows you to create/Remove User in Active Directory, but also perm
 This module have been tested on Windows Server 2012 r2, should work on Windows Server since 2008 R2.
 
 ##Last Fix/Update
-V 0.0.5 :
- - Create/Remove/Update a User or a multiple Users in Active Directory
- - Create/Remove OU in Active Directory
+V 0.0.6 :
+ - Create/Remove a Group in Active Directory
+ - Create/Remove members inside a existing Group in Active Directory
+ - Add possibility to enter a password for user
+ - Put password in xml file instead of txt. Better for ulterior use
+ - Fix showing notice when no modification is made on a user
 
 ##Module Description
 
@@ -31,7 +34,9 @@ You can also do :
 + Manage object in your AD :
  - User, 
  - Users,
- - OU
+ - OU,
+ - Group,
+ - Group Members
 
 
 ###Setup Requirements
@@ -113,6 +118,7 @@ For adding a simple User :
 	  firstname            => 'test',
 	  passwordneverexpires => true,
 	  passwordlength       => '15',
+	  password             => 'M1Gr3atP@ssw0rd', #You can specify a password for the account you declare
 	}
 ```
 
@@ -136,6 +142,7 @@ For adding multiple Users :
 		firstname            => 'test22',
 		passwordneverexpires => true,
 		passwordlength       => '9',
+		password             => 'M1Gr3atP@ssw0rd',
 	  }
 	]
 
@@ -145,7 +152,39 @@ For adding multiple Users :
 	}
 ```
 
+About password: the password will be auto-generated or now you can specify your own password (min 8 characters, one alpha, one numeric, one special characters at least)
+Passwords will be saved to users.xml on your c: drive (C:\users.xml)
 
+For adding a Group :
+```
+	windows_ad::group{'test':
+	  ensure               => present,
+	  domainname           => 'jre.local',
+	  path                 => 'CN=Users,DC=JRE,DC=LOCAL',
+	  groupname            => 'groupplop',
+	  groupscope           => 'Global',
+	  groupcategory        => 'Security',
+	  description          => 'desc group',
+	}
+```
+
+For adding members to a Group :
+```
+	windows_ad::groupmembers{'Member groupplop':
+	  ensure    => present,
+	  groupname => 'groupplop',
+	  members   => '"jre","test2"',
+	}
+```
+
+For the group members respect the syntax : '"samaccountname","samaccountname"' and if only one member :'"jre"'
+The module doesn't delete users if you let ensure to present, and modify only the members list
+Otherwise, if you let in the list the members you want to delete and put ensure to absent the module will delete only the members in the list 
+
+### Known issues
+Sometimes the generated password doesn't meet the windows requirement, however the user is created but not enabled
+ -> [MSDN Note of Remarks Part](http://msdn.microsoft.com/en-us/library/vstudio/system.web.security.membership.generatepassword.aspx)
+ -> WorkAround just delete the user or specify his password and execute again the manifest
 
 License
 -------
