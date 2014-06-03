@@ -1,5 +1,5 @@
 name 'jriviere-windows_ad'
-version '0.0.6'
+version '0.0.7'
 dependency 'joshcooper/powershell', '>=0.0.6'
 dependency 'puppetlabs/stdlib', '>= 4.2.1'
 source 'https://github.com/ninja-2/windows_ad'

@@ -1,6 +1,6 @@
 {
   "name": "jriviere-windows_ad",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "source": "https://github.com/ninja-2/windows_ad",
   "author": "Jérôme RIVIERE www.jeroée-riviere.re",
   "license": "Apache License, Version 2.0",
@@ -21,8 +21,8 @@
 
   ],
   "checksums": {
-    "Modulefile": "88abb245847dbcd6c56c82bf88999637",
-    "README.md": "db226709fdfdb2abc6e3ebf13047c597",
+    "Modulefile": "17d9f3e0a739d8cad873a70a7566c1fb",
+    "README.md": "53e6a915621801d606ddffd3f4182d98",
     "manifests/conf_forest.pp": "a3ce1506d95499c73d267ad62a1e8541",
     "manifests/group.pp": "1d21ffcebef368d23acd6c738100f025",
     "manifests/groupmembers.pp": "34ae17fcbff14710c0df7c19f7e8f823",

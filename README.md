@@ -11,17 +11,19 @@ This module have two main roles :
 - Manage Users/OU/Groups in your Active Directory
 
 
-This module permit you to install a Windows AD Domain controller on a Windows Server.
+This module permits you to install a Windows AD Domain controller on a Windows Server.
 
 
-Moreover, it allows you to create/Remove User in Active Directory, but also permit you to create/Remove Organisational Unit in Active Directory
+Moreover, it allows you to create/Remove User in Active Directory, but also permits you to create/Remove Organisational Unit in Active Directory
 
 
 This module have been tested on Windows Server 2012 r2, should work on Windows Server since 2008 R2.
 
 ##Last Fix/Update
-V 0.0.6 :
+V 0.0.7:
  - Update readme for informe that you have to declare the file in your manifest for use user resource
+
+V 0.0.6:
  - Create/Remove a Group in Active Directory
  - Create/Remove members inside a existing Group in Active Directory
  - Add possibility to enter a password for user
