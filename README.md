@@ -21,6 +21,7 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 
 ##Last Fix/Update
 V 0.0.6 :
+ - Update readme for informe that you have to declare the file in your manifest for use user resource
  - Create/Remove a Group in Active Directory
  - Create/Remove members inside a existing Group in Active Directory
  - Add possibility to enter a password for user
@@ -106,6 +107,13 @@ For adding Organisational Unit :
 	}
 ```
 
+Prerequisite for User : You have to declare your file in your manifest like that. For now you can't change the path of the xml file. Just copy and paste
+```
+	file { "C:\users.xml":
+	  content => template('windows_ad/xml.erb'),
+	  replace => no,
+	}
+```
 
 For adding a simple User :
 ```
@@ -197,4 +205,4 @@ Jerome RIVIERE
 Support
 -------
 
-Please log tickets and issues at our [Projects site](https://github.com/ninja-2/windows_ad)
+Please log tickets and issues at our [GitHub site](https://github.com/ninja-2/windows_ad/issues)
