@@ -20,15 +20,9 @@ Moreover, it allows you to create/Remove User in Active Directory, but also perm
 This module have been tested on Windows Server 2012 r2, should work on Windows Server since 2008 R2.
 
 ##Last Fix/Update
-V 0.0.7:
- - Update readme for informe that you have to declare the file in your manifest for use user resource
-
-V 0.0.6:
- - Create/Remove a Group in Active Directory
- - Create/Remove members inside a existing Group in Active Directory
- - Add possibility to enter a password for user
- - Put password in xml file instead of txt. Better for ulterior use
- - Fix showing notice when no modification is made on a user
+V 0.0.8:
+ - The users.xml file is now automatically created, no need anymore to create it in your manifest
+ - You can specify an alternate path for the xml file
 
 ##Module Description
 
@@ -109,14 +103,6 @@ For adding Organisational Unit :
 	}
 ```
 
-Prerequisite for User : You have to declare your file in your manifest like that. For now you can't change the path of the xml file. Just copy and paste
-```
-	file { "C:\users.xml":
-	  content => template('windows_ad/xml.erb'),
-	  replace => no,
-	}
-```
-
 For adding a simple User :
 ```
 	windows_ad::user{'Add_user':
@@ -129,6 +115,7 @@ For adding a simple User :
 	  passwordneverexpires => true,
 	  passwordlength       => '15',
 	  password             => 'M1Gr3atP@ssw0rd', #You can specify a password for the account you declare
+	  $xmlpath             => 'C:\\users.xml'    # must contain the full path, and the name of the file. Default value C:\\users.xml
 	}
 ```
 
@@ -159,6 +146,7 @@ For adding multiple Users :
 	windows_ad::users{'Add_Users':
 	  domainname           => 'jre.local',
 	  users                => $users,
+	  xmlpath              => 'C:\\users.xml', # must contain the full path, and the name of the file. Default value C:\\users.xml
 	}
 ```
 

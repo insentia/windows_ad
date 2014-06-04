@@ -12,9 +12,6 @@
 #
 # === Parameters
 #
-# Document parameters here.
-#
-# [*sample_parameter*]
 # $ensure                -> add or delete user
 # domainname,            -> the domain name like : jre.local
 # $path,             -> where is located the account
@@ -25,16 +22,8 @@
 # $passwordlength        -> set password length
 # $enabled               -> enable account after creation (true/false)
 # $password              -> fill a specific password. If you don't specify a password will be generated
-# === Variables
+# $xmlpath               -> must contain the full path, and the name of the file. Default value C:\\users.xml
 #
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
 #
 # === Examples
 #
@@ -71,7 +60,7 @@ define windows_ad::user(
   $passwordlength       = 9,                                  # password length
   $enabled              = true,                               # enable account after creation (true/false)
   $password             = '',                                 # password to set to the account. Default autogenerating
-
+  $xmlpath              = 'C:\\users.xml',                    # file where to save user info
 # delete user
   $confirmdeletion      = false,                # delete wihtout confirmation
 ){
@@ -81,6 +70,13 @@ define windows_ad::user(
   
   $modify = false     # will be implement later for modify password. not used for now
 
+  if (!defined(File[$xmlpath])){
+    file{"$xmlpath":
+      content => template('windows_ad/xml.erb'),
+      replace => no,
+    }
+  }
+  
   if($ensure == 'present'){
     $fullname = "${firstname} ${lastname}"
     if(!empty($firstname)){$fullnameparam = "-DisplayName '${firstname} ${lastname}'"}
@@ -122,9 +118,9 @@ define windows_ad::user(
       before      => Exec["Add to XML - ${accountname}"],
     }
     exec { "Add to XML - ${accountname}":
-      command     => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content 'C:\\users.xml';\$subel = \$xml.CreateElement('user');(\$xml.configuration.GetElementsByTagName('users')).AppendChild(\$subel);\$name = \$xml.CreateAttribute('name');\$name.Value = '${accountname}';\$password = \$xml.CreateAttribute('password');\$password.Value = '${pwd}';\$subel.Attributes.Append(\$name);\$subel.Attributes.Append(\$password);\$xml.save('C:\\users.xml');",
+      command     => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$subel = \$xml.CreateElement('user');(\$xml.configuration.GetElementsByTagName('users')).AppendChild(\$subel);\$name = \$xml.CreateAttribute('name');\$name.Value = '${accountname}';\$password = \$xml.CreateAttribute('password');\$password.Value = '${pwd}';\$subel.Attributes.Append(\$name);\$subel.Attributes.Append(\$password);\$xml.save('${xmlpath}');",
       provider    => powershell,
-	  onlyif      => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content 'C:\\users.xml';\$exist=\$false;foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$exist=\$true}}if(\$exist -eq \$True){exit 1}",
+	  onlyif      => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$exist=\$false;foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$exist=\$true}}if(\$exist -eq \$True){exit 1}",
     }
 
   }elsif($ensure == 'absent'){
@@ -135,9 +131,9 @@ define windows_ad::user(
       before      => Exec["Remove to XML - ${accountname}"],
     }
     exec { "Remove to XML - ${accountname}":
-      command     => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content 'C:\\users.xml';foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$user.ParentNode.RemoveChild(\$user);\$xml.save('C:\\users.xml');}}",
+      command     => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$user.ParentNode.RemoveChild(\$user);\$xml.save('${xmlpath}');}}",
       provider    => powershell,
-      onlyif      => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content 'C:\\users.xml';\$exist=\$false;foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$exist=\$true}}if(\$exist -eq \$False){exit 1}",
+      onlyif      => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$exist=\$false;foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$exist=\$true}}if(\$exist -eq \$False){exit 1}",
     }
   }
 }
