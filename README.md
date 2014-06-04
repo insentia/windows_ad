@@ -115,7 +115,7 @@ For adding a simple User :
 	  passwordneverexpires => true,
 	  passwordlength       => '15',
 	  password             => 'M1Gr3atP@ssw0rd', #You can specify a password for the account you declare
-	  $xmlpath             => 'C:\\users.xml'    # must contain the full path, and the name of the file. Default value C:\\users.xml
+	  xmlpath             => 'C:\\users.xml',    # must contain the full path, and the name of the file. Default value C:\\users.xml
 	}
 ```
 

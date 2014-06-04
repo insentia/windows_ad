@@ -22,7 +22,7 @@
   ],
   "checksums": {
     "Modulefile": "afe6e33b99eaae52cc10bac0c271157d",
-    "README.md": "0d3a20bf32a485fdd04dfe5a3f1af4e7",
+    "README.md": "b400bb4ff4134affda0f107e1c11f388",
     "manifests/conf_forest.pp": "a3ce1506d95499c73d267ad62a1e8541",
     "manifests/group.pp": "1d21ffcebef368d23acd6c738100f025",
     "manifests/groupmembers.pp": "34ae17fcbff14710c0df7c19f7e8f823",
