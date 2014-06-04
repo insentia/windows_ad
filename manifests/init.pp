@@ -12,15 +12,17 @@
 class windows_ad (
   ### part install AD
   $install                   = 'present',
-  $installmanagementtools    = true,
+  $installmanagementtools    = false,
   $installsubfeatures        = false,
   $restart                   = false,
+  $installflag               = false,                # Flag to bypass the install of AD if desired
 
   ### Part Configure AD - Global
   $configure                 = 'present',
   $domain                    = 'forest',
   $domainname                = undef,                # FQDN
   $netbiosdomainname         = undef,                # FQDN
+  $configureflag             = false,                # Flag to bypass the configuration of AD if desired
 
   #level AD
   $domainlevel               = '6',                   # Domain level {4 - Server 2008 R2 | 5 - Server 2012 | 6 - Server 2012 R2}
@@ -52,6 +54,13 @@ class windows_ad (
   $domaintype                = undef,          # Type of domain {Tree | Child | Forest} (New domain tree in an existing forest, child domain, or new forest)
   $sitename                  = undef,          # Site Name
 
+  ### Define Hiera hashes
+  $groups                    = undef,
+  $groups_hiera_merge        = true,
+  $users                     = undef,
+  $users_hiera_merge         = true,
+  $usersingroup              = undef,
+  $usersingroup_hiera_merge  = true,
 ) {
 
   # when present install process will be set. if already install nothing done
@@ -66,6 +75,7 @@ class windows_ad (
     installmanagementtools => $installmanagementtools,
     installsubfeatures     => $installsubfeatures,
     restart                => $restart,
+    installflag            => $installflag,
   }
 
   class{'windows_ad::conf_forest':
@@ -86,6 +96,7 @@ class windows_ad (
     forceremoval              => $forceremoval,
     uninstalldnsrole          => $uninstalldnsrole,
     demoteoperationmasterrole => $demoteoperationmasterrole,
+    configureflag             => $configureflag,
   }
 
   if($install == 'present'){
@@ -97,4 +108,57 @@ class windows_ad (
       Class['windows_ad::conf_forest'] -> Class['windows_ad::install']
     }
   }
+
+  if type($groups_hiera_merge) == 'string' {
+    $groups_hiera_merge_real = str2bool($groups_hiera_merge)
+  } else {
+    $groups_hiera_merge_real = $groups_hiera_merge
+  }
+  validate_bool($groups_hiera_merge_real)
+
+  if $groups != undef {
+    if $groups_hiera_merge_real == true {
+      $groups_real = hiera_hash('windows_ad::groups')
+    } else {
+      $groups_real = $groups
+    }
+    validate_hash($groups_real)
+    create_resources('windows_ad::group',$groups_real)
+  }
+
+  if type($users_hiera_merge) == 'string' {
+    $users_hiera_merge_real = str2bool($users_hiera_merge)
+  } else {
+    $users_hiera_merge_real = $users_hiera_merge
+  }
+  validate_bool($users_hiera_merge_real)
+
+  if $users != undef {
+    if $users_hiera_merge_real == true {
+      $users_real = hiera_hash('windows_ad::users')
+    } else {
+      $users_real = $users
+    }
+    validate_hash($users_real)
+    create_resources('windows_ad::user',$users_real)
+  }
+
+  if type($usersingroup_hiera_merge) == 'string' {
+    $usersingroup_hiera_merge_real = str2bool($usersingroup_hiera_merge)
+  } else {
+    $usersingroup_hiera_merge_real = $usersingroup_hiera_merge
+  }
+  validate_bool($usersingroup_hiera_merge_real)
+
+  if $usersingroup != undef {
+    if $usersingroup_hiera_merge_real == true {
+      $usersingroup_real = hiera_hash('windows_ad::usersingroup')
+    } else {
+      $usersingroup_real = $usersingroup
+    }
+    validate_hash($usersingroup_real)
+    create_resources('windows_ad::groupmembers',$usersingroup_real)
+  }
+
+  Windows_ad::Group <| |> -> Windows_ad::User  <| |> -> Windows_ad::Groupmembers <| |>
 }

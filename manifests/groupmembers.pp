@@ -47,15 +47,15 @@ define windows_ad::groupmembers(
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
 
   if($ensure == 'present'){
-    exec { "Add Group Member - ${groupname}":
+    exec { "Add Group Member - ${name}":
       command     => "import-module activedirectory;Add-ADGroupMember '${groupname}' -Member ${members}",
-      onlyif      => "\$member=\$null;\$values=${members};\$split=\$values.split(',');if(dsquery.exe group -samid ${groupname}){\$allmembers = Get-ADGroupMember '${groupname}';foreach(\$value in \$split){foreach(\$allmember in \$allmembers){\$one = \$value.tolower();if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member-eq\$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}}};if(( \$member -ne '${$members}') ){}else{exit 1}}else{exit 1}",
+      onlyif      => "import-module activedirectory;\$member=\$null;\$values='${members}';\$split=\$values.split(',');if(dsquery.exe group -samid '${groupname}'){foreach(\$value in \$split){foreach(\$allmember in Get-ADGroupMember '${groupname}'){\$one = \$value.tolower() -replace '\"','';if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member -eq \$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}}}if(( \$member -eq '${members}') ){exit 1}}else{exit 1}",
       provider    => powershell,
     }
   }else{
-    exec { "Remove Group Member - ${groupname}":
+    exec { "Remove Group Member - ${name}":
       command     => "import-module activedirectory;Remove-ADGroupMember '${groupname}' -Member ${members} -Confirm:\$False",
-      onlyif      => "\$member=\$null;\$values=${members};\$split=\$values.split(',');if((dsquery.exe group -samid ${groupname}) -and ((Get-ADGroupMember -Identity ${groupname}) -ne \$null)){\$allmembers = Get-ADGroupMember '${groupname}';foreach(\$value in \$split){foreach(\$allmember in \$allmembers){\$one = \$value.tolower();if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member-eq\$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}}};if(( \$member -eq '${$members}') ){}else{exit 1}}else{exit 1}",
+      onlyif      => "import-module activedirectory;\$member=\$null;\$values=${members};\$split=\$values.split(',');if((dsquery.exe group -samid ${groupname}) -and ((Get-ADGroupMember -Identity ${groupname}) -ne \$null)){foreach(\$value in \$split){foreach(\$allmember in Get-ADGroupMember '${groupname}'){\$one = \$value.tolower();if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member-eq\$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}}};if(( \$member -eq '${members}') ){}else{exit 1}}else{exit 1}",
       provider    => powershell,
     }
   }

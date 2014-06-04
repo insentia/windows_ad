@@ -48,27 +48,26 @@ define windows_ad::group(
   $groupscope       = 'Global',        # is groupscope (DomainLocal  OR  Global  OR  Universal )
   $groupcategory    = 'Security',      # is groupcategory ( Security  OR Distribution  )
   $description      = '',              # description of group
-
-# delete group
-  $confirmdeletion  = false,                # delete wihtout confirmation
+  $confirmdeletion  = false,           # delete without confirmation
 ){
+
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
   validate_re($groupscope, '^(DomainLocal|Global|Universal)$', 'valid values for groupscope are \'DomainLocal\' or \'Global\' or \'Universal\'')
   validate_re($groupcategory, '^(Security|Distribution)$', 'valid values for groupcategory are \'Security\' or \'Distribution\'')
-  
+
   if($ensure == 'present'){
     exec { "Add Group - ${groupname}":
       command     => "import-module activedirectory;New-ADGroup -Description '${description}' -DisplayName '${displayname}' -Name '${groupname}' -GroupCategory '${groupcategory}' -GroupScope '${groupscope}' -Path '${path}'",
       onlyif      => "if((dsquery.exe group -samid ${groupname})){exit 1}",
       provider    => powershell,
-    }  
+    }
   }else{
     exec { "Remove Group - ${groupname}":
       command     => "import-module activedirectory;Remove-ADGroup -identity '${groupname}' -confirm:$${confirmdeletion}",
       onlyif      => "if((dsquery.exe group -samid ${groupname})){}else{exit 1}",
       provider    => powershell,
-    }     
+    }
   }
-  
-  
+
+
 }

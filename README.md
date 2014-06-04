@@ -11,18 +11,26 @@ This module have two main roles :
 - Manage Users/OU/Groups in your Active Directory
 
 
-This module permits you to install a Windows AD Domain controller on a Windows Server.
+This module permit you to install a Windows AD Domain controller on a Windows Server.
 
 
-Moreover, it allows you to create/Remove User in Active Directory, but also permits you to create/Remove Organisational Unit in Active Directory
+Moreover, it allows you to create/Remove User in Active Directory, but also permit you to create/Remove Organisational Unit in Active Directory
 
 
 This module have been tested on Windows Server 2012 r2, should work on Windows Server since 2008 R2.
 
 ##Last Fix/Update
-V 0.0.8:
- - The users.xml file is now automatically created, no need anymore to create it in your manifest
- - You can specify an alternate path for the xml file
+V 0.0.7 :
+ - Added functionality so that the code can pull data from hiera
+ - Added chaining to enforce execution ordering
+ - Fixed some Powershell scripts that were causing errors
+ - Added some conditional flags to make installing AD and configuring the forest optional
+ - Added conditional flag to make writing to the xml file optional
+ - Create/Remove a Group in Active Directory
+ - Create/Remove members inside a existing Group in Active Directory
+ - Add possibility to enter a password for user
+ - Put password in xml file instead of txt. Better for ulterior use
+ - Fix showing notice when no modification is made on a user
 
 ##Module Description
 
@@ -54,7 +62,7 @@ Depends on the following modules:
 
 ##Usage
 
-Class: windows_ad
+Class: windows_ad  
 ```
 Example - Create a new forest
 	class {'windows_ad':
@@ -103,6 +111,7 @@ For adding Organisational Unit :
 	}
 ```
 
+
 For adding a simple User :
 ```
 	windows_ad::user{'Add_user':
@@ -115,7 +124,6 @@ For adding a simple User :
 	  passwordneverexpires => true,
 	  passwordlength       => '15',
 	  password             => 'M1Gr3atP@ssw0rd', #You can specify a password for the account you declare
-	  xmlpath             => 'C:\\users.xml',    # must contain the full path, and the name of the file. Default value C:\\users.xml
 	}
 ```
 
@@ -146,7 +154,6 @@ For adding multiple Users :
 	windows_ad::users{'Add_Users':
 	  domainname           => 'jre.local',
 	  users                => $users,
-	  xmlpath              => 'C:\\users.xml', # must contain the full path, and the name of the file. Default value C:\\users.xml
 	}
 ```
 
@@ -195,4 +202,4 @@ Jerome RIVIERE
 Support
 -------
 
-Please log tickets and issues at our [GitHub site](https://github.com/ninja-2/windows_ad/issues)
+Please log tickets and issues at our [Projects site](https://github.com/ninja-2/windows_ad)

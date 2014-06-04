@@ -12,8 +12,6 @@
 #
 # domainname     -> the domain name like : jre.local
 # users          -> users array (see example to know how declare them)
-# xmlpath        -> must contain the full path, and the name of the file. Default value C:\\users.xml
-	
 #
 # === Examples
 #
@@ -53,9 +51,8 @@
 # Copyright 2014 Jerome RIVIERE.
 #
 define windows_ad::users(
-  $domainname   = $domainname,    # the domain name like : jre.local
-  $users        = $users,         # users array
-  $xmlpath      = 'C:\\users.xml', # path where to save the user xml
+  $domainname   = $domainname,  # the domain name like : jre.local
+  $users        = $users,       # users array
 ){
   $_users = $users
   each($_users) |$user|{
@@ -72,7 +69,6 @@ define windows_ad::users(
       enabled              => $user['enabled'],
       password             => $user['password'],
       confirmdeletion      => $user['confirmdeletion'],
-      xmlpath              => $xmlpath,
     }
   }
 }
