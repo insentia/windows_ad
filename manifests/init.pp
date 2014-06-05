@@ -12,17 +12,17 @@
 class windows_ad (
   ### part install AD
   $install                   = 'present',
-  $installmanagementtools    = false,
+  $installmanagementtools    = true,
   $installsubfeatures        = false,
   $restart                   = false,
-  $installflag               = false,                # Flag to bypass the install of AD if desired
+  $installflag               = true,                 # Flag to bypass the install of AD if desired
 
   ### Part Configure AD - Global
   $configure                 = 'present',
   $domain                    = 'forest',
   $domainname                = undef,                # FQDN
   $netbiosdomainname         = undef,                # FQDN
-  $configureflag             = false,                # Flag to bypass the configuration of AD if desired
+  $configureflag             = true,                 # Flag to bypass the configuration of AD if desired
 
   #level AD
   $domainlevel               = '6',                   # Domain level {4 - Server 2008 R2 | 5 - Server 2012 | 6 - Server 2012 R2}
@@ -160,5 +160,5 @@ class windows_ad (
     create_resources('windows_ad::groupmembers',$usersingroup_real)
   }
 
-  Windows_ad::Group <| |> -> Windows_ad::User  <| |> -> Windows_ad::Groupmembers <| |>
+  Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User  <| |> -> Windows_ad::Groupmembers <| |>
 }

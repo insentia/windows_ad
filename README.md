@@ -20,17 +20,23 @@ Moreover, it allows you to create/Remove User in Active Directory, but also perm
 This module have been tested on Windows Server 2012 r2, should work on Windows Server since 2008 R2.
 
 ##Last Fix/Update
-V 0.0.7 :
- - Added functionality so that the code can pull data from hiera
- - Added chaining to enforce execution ordering
- - Fixed some Powershell scripts that were causing errors
- - Added some conditional flags to make installing AD and configuring the forest optional
- - Added conditional flag to make writing to the xml file optional
- - Create/Remove a Group in Active Directory
- - Create/Remove members inside a existing Group in Active Directory
- - Add possibility to enter a password for user
- - Put password in xml file instead of txt. Better for ulterior use
- - Fix showing notice when no modification is made on a user
+V 0.0.9 :
+ - Fix some error in powershell script (OU with space works now)
+ - Set true for default value of configureflag, installflag, writetoxmlflag
+ - Set false to default confirmdeletion on user.
+ - Update groupmembers resource. If the user doesn't exist, no error will occur
+ - fix configureflag variable for conf_forest
+ 
+  + Merge with pull request #1 :
+   - Added functionality so that the code can pull data from hiera
+   - Added chaining to enforce execution ordering
+   - Fixed some Powershell scripts that were causing errors
+   - Added some conditional flags to make installing AD and configuring the forest optional
+   - Added conditional flag to make writing to the xml file optional
+
+V 0.0.8 :
+ - The users.xml file is now automatically created, no need anymore to create it in your manifest
+ - You can specify an alternate path for the xml file
 
 ##Module Description
 
@@ -52,13 +58,13 @@ Your puppet.conf need to have this following line:
 	parser = future    --> allow use of a foreach loop in puppet module 
 ``` 
 
-If you don't want to activate the future parser, you can't declare and use the users definition (windows_ad::users), 
-so you can't add users by array and need to declare them one by one (windows_ad::user)
+If you don't want to activate the future parser, you can't declare and use the users definition (with resource : windows_ad::users), 
+so you can't add users by array and need to declare them one by one (with resource : windows_ad::user)
 
 
 Depends on the following modules:
-['joshcooper/powershell', '>=0.0.6'](https://forge.puppetlabs.com/joshcooper/powershell),
-['puppetlabs/stdlib', '>= 4.2.1'](https://forge.puppetlabs.com/puppetlabs/stdlib)
+ - ['joshcooper/powershell', '>=0.0.6'](https://forge.puppetlabs.com/joshcooper/powershell),
+ - ['puppetlabs/stdlib', '>= 4.2.1'](https://forge.puppetlabs.com/puppetlabs/stdlib)
 
 ##Usage
 
@@ -69,7 +75,9 @@ Example - Create a new forest
 	  install                => present,
 	  installmanagementtools => true,
 	  restart                => true,
+	  installflag            => true,
 	  configure              => present,
+	  configureflag          => true,
 	  domain                 => 'forest',
 	  domainname             => 'jre.local',
 	  netbiosdomainname      => 'jre',
@@ -88,7 +96,9 @@ Example - Create a new forest
 Parameters:
 ```
 	$install              # Present or absent -> install/desinstall ADDS role
+	$installflag          # Flag to bypass the install of AD if desired. Need to be set to False to bypass. Default true
 	$configure            # Present or absent -> configure/remove a Domain Controller
+	$configureflag        # Flag to bypass the configuration of AD if desired. Need to be set to False to bypass. Default true
 	$domainname           # name of domain you must install FQDN
 	$domain               # Installation type { forest | tree | child | replica | readonly } ==> doesn't implement yet
 	$netbiosdomainname    # NetBIOS name
@@ -123,7 +133,9 @@ For adding a simple User :
 	  firstname            => 'test',
 	  passwordneverexpires => true,
 	  passwordlength       => '15',
-	  password             => 'M1Gr3atP@ssw0rd', #You can specify a password for the account you declare
+	  password             => 'M1Gr3atP@ssw0rd',  # You can specify a password for the account you declare
+	  xmlpath              => 'C:\\users.xml',    # must contain the full path, and the name of the file. Default value C:\\users.xml
+	  writetoxmlflag       => true,               # need to be set to false if you doesn't want to write the xml file. Default set to true
 	}
 ```
 
@@ -154,6 +166,8 @@ For adding multiple Users :
 	windows_ad::users{'Add_Users':
 	  domainname           => 'jre.local',
 	  users                => $users,
+	  xmlpath              => 'C:\\users.xml', # must contain the full path, and the name of the file. Default value C:\\users.xml
+	  writetoxmlflag       => true,            # need to be set to false if you doesn't want to write the xml file. Default set to true
 	}
 ```
 
@@ -184,7 +198,7 @@ For adding members to a Group :
 
 For the group members respect the syntax : '"samaccountname","samaccountname"' and if only one member :'"jre"'
 The module doesn't delete users if you let ensure to present, and modify only the members list
-Otherwise, if you let in the list the members you want to delete and put ensure to absent the module will delete only the members in the list 
+Otherwise, if you let in the list of the members you want to delete and put ensure to absent, then the module will delete only the members in the list 
 
 ### Known issues
 Sometimes the generated password doesn't meet the windows requirement, however the user is created but not enabled
@@ -197,9 +211,12 @@ Apache License, Version 2.0
 
 Contact
 -------
-Jerome RIVIERE
+Jerome RIVIERE (www.jerome-riviere.re)
+Contributors : 
+ + V 0.0.9 :
+   - [shawnhall](https://github.com/shawnhall)  -> Pull Request #1
 
 Support
 -------
 
-Please log tickets and issues at our [Projects site](https://github.com/ninja-2/windows_ad)
+Please log tickets and issues on [GitHub site](https://github.com/ninja-2/windows_ad/issues)

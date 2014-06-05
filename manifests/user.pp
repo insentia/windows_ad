@@ -12,12 +12,9 @@
 #
 # === Parameters
 #
-# Document parameters here.
-#
-# [*sample_parameter*]
 # $ensure                -> add or delete user
 # domainname,            -> the domain name like : jre.local
-# $path,             -> where is located the account
+# $path,                 -> where is located the account
 # $accountname,          -> is samaccountname
 # $lastname,             -> is lastname
 # $firstname,            -> is firsname
@@ -25,16 +22,8 @@
 # $passwordlength        -> set password length
 # $enabled               -> enable account after creation (true/false)
 # $password              -> fill a specific password. If you don't specify a password will be generated
-# === Variables
+# $xmlpath               -> must contain the full path, and the name of the file. Default value C:\\users.xml
 #
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
 #
 # === Examples
 #
@@ -71,10 +60,11 @@ define windows_ad::user(
   $passwordlength       = 9,                                  # password length
   $enabled              = true,                               # enable account after creation (true/false)
   $password             = '',                                 # password to set to the account. Default autogenerating
-  $writetoxmlflag       = false,                              # Flag that makes writing to the users.xml optional
+  $writetoxmlflag       = true,                               # Flag that makes writing to the users.xml optional
+  $xmlpath              = 'C:\\users.xml',                    # file where to save user info. Default set to C:\\users.xml
 
 # delete user
-  $confirmdeletion      = true,                # delete wihtout confirmation
+  $confirmdeletion      = false,                               # delete wihtout confirmation
 
 ){
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
@@ -83,7 +73,14 @@ define windows_ad::user(
   validate_bool($writetoxmlflag)
 
   $modify = false     # will be implement later for modify password. not used for now
-
+  if ($writetoxmlflag == true){
+    if (!defined(File[$xmlpath])){
+      file{"$xmlpath":
+        content => template('windows_ad/xml.erb'),
+        replace => no,
+      }
+    }
+  }
   if($ensure == 'present'){
     $fullname = "${firstname} ${lastname}"
     if(!empty($firstname)){$fullnameparam = "-DisplayName '${firstname} ${lastname}'"}
@@ -120,7 +117,7 @@ define windows_ad::user(
     #$save2xml = template('windows_ad/user2xml.erb')
     exec { "Add User - ${accountname}":
       command     => "import-module servermanager;add-windowsfeature -name 'rsat-ad-powershell' -includeAllSubFeature;import-module activedirectory;New-ADUser -name '${fullname}' -DisplayName '${fullname}' -GivenName '${firstname}' -SurName '${lastname}' -Samaccountname '${accountname}' -UserPrincipalName '${userprincipalname}' -Description '${description}' -PasswordNeverExpires $${passwordneverexpires} -path '${path}' -AccountPassword (ConvertTo-SecureString '${pwd}' -AsPlainText -force) -Enabled $${enabled};",
-      onlyif      => "\$oustring = ${path} -replace '\"','';Write-Host \$oustring;if((dsquery.exe user -samid ${accountname}) -or ([adsi]::Exists(\"LDAP://\$oustring\") -eq \$false)){exit 1}",
+      onlyif      => "\$oustring = '${path}' -replace '\"','';if((dsquery.exe user -samid ${accountname}) -or ([adsi]::Exists(\"LDAP://\$oustring\") -eq \$false)){exit 1}",
       provider    => powershell,
     }
     if ($writetoxmlflag == true){

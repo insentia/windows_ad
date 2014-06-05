@@ -53,7 +53,7 @@ class windows_ad::conf_forest (
   $installdns                = $installdns,
   $kernel_ver                = $kernel_ver,
   $timeout                   = 0,
-  $configureflag             = $windows_ad::configureflag,
+  $configureflag             = $configureflag,
 
   #removal parameters
   $localadminpassword        = $localadminpassword, #admin password required for removal
@@ -63,7 +63,7 @@ class windows_ad::conf_forest (
   $demoteoperationmasterrole = $demoteoperationmasterrole,
 ){
   validate_bool($configureflag)
-  if ($configure_flag == true){
+  if ($configureflag == true){
     if $force { $forcebool = 'true' } else { $forcebool = 'false' }
     if $forceremoval { $forceboolremoval = 'true' } else { $forceboolremoval = 'false' }
     if $demoteoperationmasterrole { $demoteoperationmasterrolebool = 'true' } else { $demoteoperationmasterrolebool = 'false' }

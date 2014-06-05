@@ -39,7 +39,7 @@
 define windows_ad::groupmembers(
   $ensure         = $ensure,         # add or delete user
   $groupname      = $groupname,      # name of group
-  $members        = $members,       # samaccountname of user
+  $members        = $members,        # samaccountname of user
 
 # delete user inside a group
   $confirmdeletion  = false,                # delete wihtout confirmation
@@ -48,14 +48,14 @@ define windows_ad::groupmembers(
 
   if($ensure == 'present'){
     exec { "Add Group Member - ${name}":
-      command     => "import-module activedirectory;Add-ADGroupMember '${groupname}' -Member ${members}",
-      onlyif      => "import-module activedirectory;\$member=\$null;\$values='${members}';\$split=\$values.split(',');if(dsquery.exe group -samid '${groupname}'){foreach(\$value in \$split){foreach(\$allmember in Get-ADGroupMember '${groupname}'){\$one = \$value.tolower() -replace '\"','';if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member -eq \$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}}}if(( \$member -eq '${members}') ){exit 1}}else{exit 1}",
+      command     => "import-module activedirectory;\$values=${members};\$split=\$values.split(',');foreach(\$value in \$split){if((dsquery.exe user -samid \$value) -ne \$null){Add-ADGroupMember '${groupname}' -Member \$value}}",
+      onlyif      => "import-module activedirectory;\$member=\$null;\$values='${members}';\$split=\$values.split(',');foreach(\$value in \$split){if((dsquery.exe group -samid '${groupname}') -ne \$null){if((dsquery.exe user -samid \$value) -ne \$null){foreach(\$allmember in Get-ADGroupMember '${groupname}'){\$one = \$value.tolower() -replace '\"','';if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member -eq \$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}}if('${members}' -eq \$member){exit 1}}else{if('${members}' -match \$member){exit 1}}}else{exit 1}}",
       provider    => powershell,
     }
   }else{
     exec { "Remove Group Member - ${name}":
-      command     => "import-module activedirectory;Remove-ADGroupMember '${groupname}' -Member ${members} -Confirm:\$False",
-      onlyif      => "import-module activedirectory;\$member=\$null;\$values=${members};\$split=\$values.split(',');if((dsquery.exe group -samid ${groupname}) -and ((Get-ADGroupMember -Identity ${groupname}) -ne \$null)){foreach(\$value in \$split){foreach(\$allmember in Get-ADGroupMember '${groupname}'){\$one = \$value.tolower();if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member-eq\$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}}};if(( \$member -eq '${members}') ){}else{exit 1}}else{exit 1}",
+      command     => "import-module activedirectory;\$values=${members};\$split=\$values.split(',');foreach(\$value in \$split){if((dsquery.exe user -samid \$value) -ne \$null){Remove-ADGroupMember '${groupname}' -Member \$value -Confirm:\$False}}",
+      onlyif      => "import-module activedirectory;\$member=\$null;\$values=${members};\$split=\$values.split(',');foreach(\$value in \$split){if(((dsquery.exe group -samid ${groupname}) -ne \$null) -and ((Get-ADGroupMember -Identity ${groupname}) -ne \$null)){foreach(\$allmember in Get-ADGroupMember '${groupname}'){\$one = \$value.tolower();if(\$one -eq \$allmember.SamAccountName.tolower()){if(\$member-eq\$null){\$member='\"'+\$allmember.SamAccountName+'\"';}else{\$member+=',\"'+\$allmember.SamAccountName+'\"';}}};if('${members}' -cmatch \$member){}else{exit 1}}else{exit 1}}",
       provider    => powershell,
     }
   }

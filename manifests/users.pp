@@ -51,8 +51,10 @@
 # Copyright 2014 Jerome RIVIERE.
 #
 define windows_ad::users(
-  $domainname   = $domainname,  # the domain name like : jre.local
-  $users        = $users,       # users array
+  $domainname     = $domainname,     # the domain name like : jre.local
+  $users          = $users,          # users array
+  $xmlpath        = 'C:\\users.xml', # path where to save the user xml
+  $writetoxmlflag = true,            # write a xml ?. Default set to true
 ){
   $_users = $users
   each($_users) |$user|{
@@ -69,6 +71,8 @@ define windows_ad::users(
       enabled              => $user['enabled'],
       password             => $user['password'],
       confirmdeletion      => $user['confirmdeletion'],
+      xmlpath              => $xmlpath,
+      writetoxmlflag       => $writetoxmlflag,
     }
   }
 }

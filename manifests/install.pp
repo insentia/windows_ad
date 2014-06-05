@@ -30,7 +30,7 @@ class windows_ad::install (
     $installmanagementtools = $installmanagementtools,
     $installsubfeatures = $installsubfeatures,
     $restart = $restart,
-    $installflag = $windows_ad::installflag,
+    $installflag = $installflag,
 ) {
 
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')

@@ -68,6 +68,4 @@ define windows_ad::group(
       provider    => powershell,
     }
   }
-
-
 }
