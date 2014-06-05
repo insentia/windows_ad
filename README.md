@@ -25,14 +25,15 @@ V 0.0.9 :
  - Set true for default value of configureflag, installflag, writetoxmlflag
  - Set false to default confirmdeletion on user.
  - Update groupmembers resource. If the user doesn't exist, no error will occur
- - fix configureflag variable for conf_forest
+ - Fix configureflag variable for conf_forest.
  
-  + Merge with pull request #1 :
-   - Added functionality so that the code can pull data from hiera
-   - Added chaining to enforce execution ordering
-   - Fixed some Powershell scripts that were causing errors
-   - Added some conditional flags to make installing AD and configuring the forest optional
-   - Added conditional flag to make writing to the xml file optional
+
++ Merge with pull request #1 :
+  - Added functionality so that the code can pull data from hiera
+  - Added chaining to enforce execution ordering
+  - Fixed some Powershell scripts that were causing errors
+  - Added some conditional flags to make installing AD and configuring the forest optional
+  - Added conditional flag to make writing to the xml file optional
 
 V 0.0.8 :
  - The users.xml file is now automatically created, no need anymore to create it in your manifest
@@ -202,8 +203,7 @@ Otherwise, if you let in the list of the members you want to delete and put ensu
 
 ### Known issues
 Sometimes the generated password doesn't meet the windows requirement, however the user is created but not enabled
- -> [MSDN Note of Remarks Part](http://msdn.microsoft.com/en-us/library/vstudio/system.web.security.membership.generatepassword.aspx)
- -> WorkAround just delete the user or specify his password and execute again the manifest
+[MSDN Note of Remarks Part](http://msdn.microsoft.com/en-us/library/vstudio/system.web.security.membership.generatepassword.aspx). WorkAround just delete the user or specify his password and execute again the manifest
 
 License
 -------
@@ -211,7 +211,8 @@ Apache License, Version 2.0
 
 Contact
 -------
-Jerome RIVIERE (www.jerome-riviere.re)
+[Jerome RIVIERE](www.jerome-riviere.re)
+
 Contributors : 
  + V 0.0.9 :
    - [shawnhall](https://github.com/shawnhall)  -> Pull Request #1
