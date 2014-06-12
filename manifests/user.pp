@@ -65,12 +65,15 @@ define windows_ad::user(
 
 # delete user
   $confirmdeletion      = false,                               # delete wihtout confirmation
-
 ){
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
   validate_bool($passwordneverexpires)
   validate_bool($enabled)
   validate_bool($writetoxmlflag)
+
+  if($passwordlength <= 7){
+    fail("The password length must be, at least, set to 8 characters for ${accountname}")
+  }
 
   $modify = false     # will be implement later for modify password. not used for now
   if ($writetoxmlflag == true){
@@ -90,16 +93,16 @@ define windows_ad::user(
 
 
     if(empty($password)){
-    $pwd = template('windows_ad/password.erb')
+    $pwd = get_random_password($passwordlength)
     }else{
-      $regex = template('windows_ad/passwordregex.erb')
+      $regex = validate_password($password)
       if($regex == 'true'){
         $pwd = $password
       }else{
         warning('Password is not compliant with complexity policy')
         warning('One integer, one upper, one lower character, one special character, minimun 8 characters long')
         warning('So we will generate one for you ...')
-        $pwd = template('windows_ad/password.erb')
+        $pwd = get_random_password($passwordlength)
       }
     }
 
