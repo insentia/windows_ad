@@ -197,7 +197,8 @@ Apache License, Version 2.0
 
 Contact
 -------
-[Jerome RIVIERE](www.jerome-riviere.re)
+[Jerome RIVIERE](http://www.jerome-riviere.re)
+
 Contributors : 
  + V 0.0.9 :
    - [shawnhall](https://github.com/shawnhall)  -> Pull Request #1

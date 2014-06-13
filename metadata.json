@@ -27,7 +27,7 @@
   ],
   "checksums": {
     "Modulefile": "2400ea0db2015b2bf6ab0b2c46a032c0",
-    "README.md": "7566b5db24c4c46779f167995de14b2d",
+    "README.md": "0cb33fe521894a7938ab118c6e0b1f5f",
     "Rakefile": "64863061ea59404d3b83d123a1be5170",
     "lib/puppet/parser/functions/get_password.rb": "2aef815da87880dc571b568d2f7f48bb",
     "lib/puppet/parser/functions/get_random_password.rb": "a6c42c35dca4a98221d06ee6ce624b78",
