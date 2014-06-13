@@ -69,7 +69,9 @@ class windows_ad (
   # when present configure process will be done. if already configure nothing done
   # absent don't do anything right now
   validate_re($configure, '^(present|absent)$', 'valid values for configure are \'present\' or \'absent\'')
-
+  validate_bool($configureflag)
+  validate_bool($installflag)
+  
   class{'windows_ad::install':
     ensure                 => $install,
     installmanagementtools => $installmanagementtools,
@@ -98,15 +100,18 @@ class windows_ad (
     demoteoperationmasterrole => $demoteoperationmasterrole,
     configureflag             => $configureflag,
   }
-
-  if($install == 'present'){
-    Class['windows_ad::install'] -> Class['windows_ad::conf_forest']
-  }else{
-    if($configure == present){
-      fail('You can\'t desactivate the Role ADDS without uninstall ADDSControllerDomain first')
+  if($installflag or $configureflag){
+    if($install == 'present'){
+      Class['windows_ad::install'] -> Class['windows_ad::conf_forest'] -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |>
     }else{
-      Class['windows_ad::conf_forest'] -> Class['windows_ad::install']
+      if($configure == present){
+        fail('You can\'t desactivate the Role ADDS without uninstall ADDSControllerDomain first')
+      }else{
+        Class['windows_ad::conf_forest'] -> Class['windows_ad::install']
+      }
     }
+  }else{
+    Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |>
   }
 
   if type($groups_hiera_merge) == 'string' {
@@ -159,6 +164,4 @@ class windows_ad (
     validate_hash($usersingroup_real)
     create_resources('windows_ad::groupmembers',$usersingroup_real)
   }
-
-  Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User  <| |> -> Windows_ad::Groupmembers <| |>
 }

@@ -4,7 +4,6 @@
 #
 # This resource allow you to add a user to a specific OU. The OU must be created. In case of the OU doesn't not exist no error will be appear
 # and puppet will continue to read your manifest.
-# When you fill your manifest be careful to declare your OU before the user.
 # You can specify a password if you want.
 # A password will be automatically generated for the user if you don't specify one, you just have to specify the length. (default set to 9 characters).
 # The password will be saved locally on C:\users.xml
@@ -91,12 +90,11 @@ define windows_ad::user(
     if(!empty($firstname)){$givenparam = "-GivenName '${firstname}'"}
     if(!empty($lastname)){$lastnameparam = "-SurName '${lastname}'"}
 
-
     if(empty($password)){
     $pwd = get_random_password($passwordlength)
     }else{
       $regex = validate_password($password)
-      if($regex == 'true'){
+      if($regex){
         $pwd = $password
       }else{
         warning('Password is not compliant with complexity policy')
@@ -128,7 +126,7 @@ define windows_ad::user(
         command  => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$subel = \$xml.CreateElement('user');(\$xml.configuration.GetElementsByTagName('users')).AppendChild(\$subel);\$name = \$xml.CreateAttribute('name');\$name.Value = '${accountname}';\$password = \$xml.CreateAttribute('password');\$password.Value = '${pwd}';\$subel.Attributes.Append(\$name);\$subel.Attributes.Append(\$password);\$xml.save('${xmlpath}');",
         provider => powershell,
         onlyif   => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$exist=\$false;foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$exist=\$true}}if(\$exist -eq \$True){exit 1}",
-        require  => Exec["Add User - ${accountname}"],
+        require  => [Exec["Add User - ${accountname}"],File[$xmlpath]],
       }
     }
   }elsif($ensure == 'absent'){
@@ -142,7 +140,7 @@ define windows_ad::user(
         command  => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$user.ParentNode.RemoveChild(\$user);\$xml.save('${xmlpath}');}}",
         provider => powershell,
         onlyif   => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$exist=\$false;foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$exist=\$true}}if(\$exist -eq \$False){exit 1}",
-        require  => Exec["Remove User - ${accountname}"],
+        require  => [Exec["Remove User - ${accountname}"],File[$xmlpath]],
       }
     }
   }

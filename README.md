@@ -18,14 +18,13 @@ Moreover, it allows you to create/Remove User in Active Directory, but also perm
 
 
 This module have been tested on Windows Server 2012 r2, should work on Windows Server since 2008 R2.
+Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.1.0 :
- - Availability to use password geenration with a puppet master
- - Add 2 functions to manage generated password
- - Add a function to get password from the generated xml
- - Remove unused templates
- - Fix some errors
+V 0.1.1 :
+ - Fix some issue when using puppet master
+ - add ordering with configureflag and installationflag
+ - Fix validate_password function. You can assign your own password if complexity is compliant
 
 ##Module Description
 
@@ -48,7 +47,7 @@ Your puppet.conf need to have this following line:
 ``` 
 
 If you don't want to activate the future parser, you can't declare and use the users definition (with resource : windows_ad::users), 
-so you can't add users by array and need to declare them one by one (with resource : windows_ad::user)
+so you can't add users by array and you need to declare them one by one (with resource : windows_ad::user)
 
 
 Depends on the following modules:
@@ -198,7 +197,7 @@ Apache License, Version 2.0
 
 Contact
 -------
-Jerome RIVIERE (www.jerome-riviere.re)
+[Jerome RIVIERE](www.jerome-riviere.re)
 Contributors : 
  + V 0.0.9 :
    - [shawnhall](https://github.com/shawnhall)  -> Pull Request #1
