@@ -21,10 +21,8 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.1.1 :
- - Fix some issue when using puppet master
- - add ordering with configureflag and installationflag
- - Fix validate_password function. You can assign your own password if complexity is compliant
+V 0.1.2 :
+ - Update get_password function
 
 ##Module Description
 
@@ -187,6 +185,7 @@ For adding members to a Group :
 For the group members respect the syntax : '"samaccountname","samaccountname"' and if only one member :'"jre"'
 The module doesn't delete users if you let ensure to present, and modify only the members list
 Otherwise, if you let in the list of the members you want to delete and put ensure to absent, then the module will delete only the members in the list 
+
 
 ### Known issues
 

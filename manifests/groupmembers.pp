@@ -25,7 +25,7 @@
 #  windows_ad::groupmembers{'test':
 #    ensure               => present,
 #    groupname            => 'SQLAdmin',
-#    members             => '"jre","test2"',
+#    members              => '"jre","test2"',
 #  }
 #
 # === Authors
