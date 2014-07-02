@@ -16,7 +16,9 @@
 # $path,                 -> where is located the account
 # $accountname,          -> is samaccountname
 # $lastname,             -> is lastname
-# $firstname,            -> is firsname
+# $firstname,            -> is firstname
+# $fullname,             -> is fullname displayname
+# $emailaddress          -> is email
 # $passwordneverexpires, -> set if password never expire or expire(true/false)
 # $passwordlength        -> set password length
 # $enabled               -> enable account after creation (true/false)
@@ -37,6 +39,8 @@
 #    passwordneverexpires => true,
 #    passwordlength       => '15',
 #    password             => 'M1Gr3atP@ssw0rd',
+#    emailaddress         => 'test@jre.local',
+#    fullname             => 'the test',
 #  }
 #
 # === Authors
@@ -52,8 +56,10 @@ define windows_ad::user(
   $domainname           = $domainname,                        # the domain name like : jre.local
   $path                 = $path,                              # where is located the account
   $accountname          = $accountname,                       # is samaccountname
-  $lastname             = $lastname,                          # is lastname
-  $firstname            = $firstname,                         # is firsname
+  $lastname             = '',                                 # is lastname
+  $firstname            = '',                                 # is firstname
+  $fullname             = '',                                 # is fullname
+  $emailaddress         = '',                                 # email address
   $description          = '',                                 # is description
   $passwordneverexpires = true,                               # password never expire or expire(true/false)
   $passwordlength       = 9,                                  # password length
@@ -63,7 +69,7 @@ define windows_ad::user(
   $xmlpath              = 'C:\\users.xml',                    # file where to save user info. Default set to C:\\users.xml
 
 # delete user
-  $confirmdeletion      = false,                               # delete wihtout confirmation
+  $confirmdeletion      = false,                              # delete wihtout confirmation
 ){
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
   validate_bool($passwordneverexpires)
@@ -74,6 +80,9 @@ define windows_ad::user(
     fail("The password length must be, at least, set to 8 characters for ${accountname}")
   }
 
+  if(empty($fullname) and empty($lastname) and empty($firstname)){
+    fail('fullname or lastname or firstname must be provided')
+  }
   $modify = false     # will be implement later for modify password. not used for now
   if ($writetoxmlflag == true){
     if (!defined(File[$xmlpath])){
@@ -84,8 +93,22 @@ define windows_ad::user(
     }
   }
   if($ensure == 'present'){
-    $fullname = "${firstname} ${lastname}"
-    if(!empty($firstname)){$fullnameparam = "-DisplayName '${firstname} ${lastname}'"}
+    if(empty($fullname)){
+      if(empty($lastname) and !empty($firstname)){
+        $fullnamevalue = $firstname
+      }
+      if(!empty($lastname) and empty($firstname)){
+        $fullnamevalue = $lastname
+      }
+      if(!empty($lastname) and !empty($firstname)){
+        $fullnamevalue = "${firstname} ${lastname}"
+      }
+    }else{
+      $fullnamevalue = $fullname
+    }
+
+	if(!empty($emailaddress)){$emailaddressparam = "-EmailAddress '$emailaddress'"}
+    if(!empty($fullnamevalue)){$fullnameparam = "-DisplayName '$fullnamevalue'"}
     if(!empty($description)){$descriptionparam = "-Description '${description}'"}
     if(!empty($firstname)){$givenparam = "-GivenName '${firstname}'"}
     if(!empty($lastname)){$lastnameparam = "-SurName '${lastname}'"}
@@ -111,13 +134,12 @@ define windows_ad::user(
       provider    => powershell,
     }
     exec { "Modify User - ${accountname}":
-      command     => "import-module activedirectory;Set-ADUser -identity ${accountname} ${fullnameparam} ${givenparam} ${lastnameparam} ${descriptionparam} -PasswordNeverExpires $${passwordneverexpires} -Enabled $${enabled};",
-      onlyif      => "\$user = Get-ADUser -Identity '${accountname}' -Properties *;if((dsquery.exe user -samid ${accountname}) -and (('${description}' -ne \$user.Description -and '${description}' -ne '') -or ('${firstname}' -ne \$user.GivenName) -or ('${lastname}' -ne \$user.Surname) -or ('${fullname}' -ne \$user.DisplayName))){}else{exit 1}",
+      command     => "import-module activedirectory;Set-ADUser -identity ${accountname} ${fullnameparam} ${givenparam} ${lastnameparam} ${descriptionparam} ${emailaddressparam} -PasswordNeverExpires $${passwordneverexpires} -Enabled $${enabled};",
+      onlyif      => "\$user = Get-ADUser -Identity '${accountname}' -Properties *;if((dsquery.exe user -samid ${accountname}) -and (('${description}' -ne \$user.Description -and '${description}' -ne '') -or (('${firstname}' -ne \$user.GivenName) -and ('${firstname}' -ne '')) -or (('${lastname}' -ne \$user.Surname) -and ('${lastname}' -ne '')) -or (('${emailaddress}' -ne \$user.EmailAddress) -and ('${emailaddress}' -ne '')) -or ('${fullnamevalue}' -ne \$user.DisplayName))){}else{exit 1}",
       provider    => powershell,
-    }
-    #$save2xml = template('windows_ad/user2xml.erb')
+    }	
     exec { "Add User - ${accountname}":
-      command     => "import-module servermanager;add-windowsfeature -name 'rsat-ad-powershell' -includeAllSubFeature;import-module activedirectory;New-ADUser -name '${fullname}' -DisplayName '${fullname}' -GivenName '${firstname}' -SurName '${lastname}' -Samaccountname '${accountname}' -UserPrincipalName '${userprincipalname}' -Description '${description}' -PasswordNeverExpires $${passwordneverexpires} -path '${path}' -AccountPassword (ConvertTo-SecureString '${pwd}' -AsPlainText -force) -Enabled $${enabled};",
+      command     => "import-module servermanager;add-windowsfeature -name 'rsat-ad-powershell' -includeAllSubFeature;import-module activedirectory;New-ADUser -name '${fullnamevalue}' -DisplayName '${fullnamevalue}' ${givenparam} ${lastnameparam} ${emailaddressparam} -Samaccountname '${accountname}' -UserPrincipalName '${userprincipalname}' -Description '${description}' -PasswordNeverExpires $${passwordneverexpires} -path '${path}' -AccountPassword (ConvertTo-SecureString '${pwd}' -AsPlainText -force) -Enabled $${enabled};",
       onlyif      => "\$oustring = '${path}' -replace '\"','';if((dsquery.exe user -samid ${accountname}) -or ([adsi]::Exists(\"LDAP://\$oustring\") -eq \$false)){exit 1}",
       provider    => powershell,
     }

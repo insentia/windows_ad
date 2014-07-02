@@ -12,7 +12,7 @@ Returns a random password.
     raise(Puppet::ParseError, "get_random_password(): Wrong number of arguments " +
       "given (#{args.size} for 1)") if args.size != 1
     specials = ((33..33).to_a + (35..38).to_a + (40..47).to_a + (58..64).to_a + (91..93).to_a + (95..95).to_a + (123..125).to_a).pack('U*').chars.to_a
-    numbers  = (0..9).to_a
+    numbers = (0..9).to_a
     alphal = ('a'..'z').to_a
     alphau = ('A'..'Z').to_a
     if ((args[0].to_i) <= 7)
@@ -25,3 +25,8 @@ Returns a random password.
     return pwd
   end
 end
+#regchain = []
+#regchain.concat(specials.shuffle)
+#regchain.concat(numbers.shuffle)
+#regchain.concat(alphal.shuffle)
+#regchain.concat(alphau.shuffle)

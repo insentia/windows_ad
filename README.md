@@ -21,8 +21,11 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.1.2 :
- - Update get_password function
+V 0.1.3 :
+ - Update User Resource :
+ - Add fullname parameters
+ - Remove mandatory flag on lastname and firstname (can just specify one)
+ - Add emailaddress parameter
 
 ##Module Description
 
@@ -41,11 +44,10 @@ You can also do :
 Your puppet.conf need to have this following line:
 ```
 	ordering=manifest
-	parser = future    --> allow use of a foreach loop in puppet module 
 ``` 
 
-If you don't want to activate the future parser, you can't declare and use the users definition (with resource : windows_ad::users), 
-so you can't add users by array and you need to declare them one by one (with resource : windows_ad::user)
+For using windows_ad::users resource you need to put parser=future in your puppet.conf
+Adding multiple users it's possible with or WITHOUT parser=future parameter. Please read the next sections
 
 
 Depends on the following modules:
@@ -115,17 +117,18 @@ For adding a simple User :
 	  domainname           => 'jre.local',
 	  path                 => 'OU=PLOP,DC=JRE,DC=LOCAL',
 	  accountname          => 'test',
-	  lastname             => 'test',
-	  firstname            => 'test',
+	  lastname             => 'test',                   ## Not mandatory. But for this 2 parameters you need to declare at least one 
+	  firstname            => 'test',                   ## or use fullname parameter !
 	  passwordneverexpires => true,
-	  passwordlength       => 15,                 # must be number so don't put ''
-	  password             => 'M1Gr3atP@ssw0rd',  # You can specify a password for the account you declare
-	  xmlpath              => 'C:\\users.xml',    # must contain the full path, and the name of the file. Default value C:\\users.xml
-	  writetoxmlflag       => true,               # need to be set to false if you doesn't want to write the xml file. Default set to true
+	  passwordlength       => 15,                       # must be number so don't put ''
+	  password             => 'M1Gr3atP@ssw0rd',        # You can specify a password for the account you declare
+	  xmlpath              => 'C:\\users.xml',          # must contain the full path, and the name of the file. Default value C:\\users.xml
+	  writetoxmlflag       => true,                     # need to be set to false if you doesn't want to write the xml file. Default set to true
+	  emailaddress         => 'test@jre.local',
 	}
 ```
 
-For adding multiple Users :
+For adding multiple Users WITH parser=future:
 ```
 	$users = [
 	 {
@@ -136,6 +139,7 @@ For adding multiple Users :
 		firstname            => 'testtest',
 		passwordneverexpires => true,
 		passwordlength       => 15,
+		fullname             => 'The test',
 	 },
 	 {
 		ensure               => present,
@@ -146,6 +150,7 @@ For adding multiple Users :
 		passwordneverexpires => true,
 		passwordlength       => 9,
 		password             => 'M1Gr3atP@ssw0rd',
+		emailaddress         => 'test2@jre.local',
 	  }
 	]
 
@@ -155,6 +160,36 @@ For adding multiple Users :
 	  xmlpath              => 'C:\\users.xml', # must contain the full path, and the name of the file. Default value C:\\users.xml
 	  writetoxmlflag       => true,            # need to be set to false if you doesn't want to write the xml file. Default set to true
 	}
+```
+
+For adding multiple Users WITHOUT parser=future:
+```
+	$userhash = {
+	 'test' => {
+		ensure               => present,
+		path                 => 'OU=PLOP,DC=JRE,DC=LOCAL',
+		accountname          => 'test',
+		lastname             => 'test',
+		firstname            => 'testtest',
+		passwordneverexpires => true,
+		passwordlength       => 15,
+		fullname             => 'The test',
+	 },
+	 'test2' => {
+		ensure               => present,
+		path                 => 'OU=PLOP,DC=JRE,DC=LOCAL',
+		accountname          => 'test2',
+		lastname             => 'test2',
+		firstname            => 'test22',
+		passwordneverexpires => true,
+		passwordlength       => 9,
+		password             => 'M1Gr3atP@ssw0rd',
+		emailaddress         => 'test2@jre.local',
+	  },
+	}
+	
+	create_resources(windows_ad::user, $userhash)
+
 ```
 
 About password: the password will be auto-generated or now you can specify your own password (min 8 characters, one alpha, one numeric, one special characters at least)
@@ -206,3 +241,4 @@ Support
 -------
 
 Please log tickets and issues on [GitHub site](https://github.com/ninja-2/windows_ad/issues)
+

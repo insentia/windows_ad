@@ -24,6 +24,7 @@
 #    firstname            => 'testtest',
 #    passwordneverexpires => true,
 #    passwordlength       => '15',
+#    emailaddress         => 'test@jre.local',
 # },
 # {
 #    ensure               => present,
@@ -33,6 +34,7 @@
 #    firstname            => 'test22',
 #    passwordneverexpires => true,
 #    passwordlength       => '9',
+#    fullname             => 'test2 the best',
 #  }
 #]
 #
@@ -56,6 +58,7 @@ define windows_ad::users(
   $xmlpath        = 'C:\\users.xml', # path where to save the user xml
   $writetoxmlflag = true,            # write a xml ?. Default set to true
 ){
+  warning('Instead of using this class, you can declare a hash of user (see readme file), and use function create_resources(windows_ad::user, $userhash)')
   $_users = $users
   each($_users) |$user|{
     windows_ad::user{"${user['accountname']}":
@@ -73,6 +76,8 @@ define windows_ad::users(
       confirmdeletion      => $user['confirmdeletion'],
       xmlpath              => $xmlpath,
       writetoxmlflag       => $writetoxmlflag,
+      fullname             => $user['fullname'],
+      emailaddress         => $user['emailaddress'],
     }
   }
 }
