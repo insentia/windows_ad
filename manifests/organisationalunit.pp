@@ -74,5 +74,6 @@ define windows_ad::organisationalunit(
       onlyif      => "if([adsi]::Exists(\"LDAP://OU=${ouName},${path}\")){}else{exit 1}",
       provider    => powershell,
     }
+    Exec["Unprotecting OU - ${ouName}"] -> Exec["Deleting OU - ${ouName}"]
   }
 }

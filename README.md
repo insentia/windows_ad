@@ -21,11 +21,10 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.1.3 :
- - Update User Resource :
- - Add fullname parameters
- - Remove mandatory flag on lastname and firstname (can just specify one)
- - Add emailaddress parameter
+V 0.1.4 :
+ - Update windows_ad::organisationalunit : Fix ordering relationship when deleting OU
+ - Update get_random_password : now compliant with windows ad default password complexity
+ - Set ensure for user to present by default.
 
 ##Module Description
 
@@ -223,7 +222,7 @@ Otherwise, if you let in the list of the members you want to delete and put ensu
 
 
 ### Known issues
-
+Password issues Fix with version 0.1.4
 
 License
 -------

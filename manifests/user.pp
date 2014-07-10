@@ -52,7 +52,7 @@
 # Copyright 2014 Jerome RIVIERE.
 #
 define windows_ad::user(
-  $ensure               = $ensure,                            # add or delete user
+  $ensure               = present,                            # add or delete user
   $domainname           = $domainname,                        # the domain name like : jre.local
   $path                 = $path,                              # where is located the account
   $accountname          = $accountname,                       # is samaccountname
