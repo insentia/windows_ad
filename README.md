@@ -24,7 +24,7 @@ Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubu
 V 0.1.4 :
  - Update windows_ad::organisationalunit : Fix ordering relationship when deleting OU
  - Update get_random_password : now compliant with windows ad default password complexity
- - Set ensure for user to present by default.
+ - Set ensure for user, group, groupmembers, organisationalunit to present by default.
 
 ##Module Description
 

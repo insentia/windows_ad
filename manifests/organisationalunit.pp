@@ -47,7 +47,7 @@
 # Copyright 2014 Jerome RIVIERE.
 #
 define windows_ad::organisationalunit(
-  $ensure               = $ensure,                # add or delete OU
+  $ensure               = present,                # add or delete OU
   $path                 = $path,                  # where is located the OU - EX:DC=JRE,DC=LOCAL
   $ouName               = $accountname,           # is organisational name
   $protectfordeletion   = true,                 # protect OU against deletion only for adding, when deleting OU the protection will be automatically set to false

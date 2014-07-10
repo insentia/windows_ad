@@ -37,7 +37,7 @@
 # Copyright 2014 Jerome RIVIERE.
 #
 define windows_ad::groupmembers(
-  $ensure         = $ensure,         # add or delete user
+  $ensure         = present,         # add or delete user
   $groupname      = $groupname,      # name of group
   $members        = $members,        # samaccountname of user
 

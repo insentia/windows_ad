@@ -41,7 +41,7 @@
 # Copyright 2014 Jerome RIVIERE.
 #
 define windows_ad::group(
-  $ensure           = $ensure,         # add or delete user
+  $ensure           = present,         # add or delete user
   $path             = $path,           # where is located the account
   $displayname      = $displayname,    # the displayname
   $groupname        = $groupname,      # is name powersherll parameter
