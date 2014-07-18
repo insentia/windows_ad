@@ -1,6 +1,6 @@
 {
   "name": "jriviere-windows_ad",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "source": "https://github.com/ninja-2/windows_ad",
   "author": "Jérôme RIVIERE www.jerome-riviere.re",
   "license": "Apache License, Version 2.0",
@@ -26,8 +26,8 @@
     }
   ],
   "checksums": {
-    "Modulefile": "5730966b2f25131f917d475335608d03",
-    "README.md": "c59bbd0457ba917c836a81b627fc6c7f",
+    "Modulefile": "6cc653d8b914ed58cdb5a25bbc2127f1",
+    "README.md": "88d2009aa687532153528cae01654cc8",
     "Rakefile": "64863061ea59404d3b83d123a1be5170",
     "lib/puppet/parser/functions/get_password.rb": "2c2df9f918df6d704f9c8aa561cd8f48",
     "lib/puppet/parser/functions/get_random_password.rb": "a659dbf0568d8239a319fd7d8ce16099",
@@ -38,7 +38,7 @@
     "manifests/init.pp": "d4d15639d76246871c8c3f6a3196bdff",
     "manifests/install.pp": "02d4dff5c898bf26bf37d25b7bdae2fb",
     "manifests/organisationalunit.pp": "c1925a20f4cb0da1cf8cb4247a635d4d",
-    "manifests/user.pp": "a954f9cb7453bc5bb859c961970eb2d0",
+    "manifests/user.pp": "7e0a4685b7fd4c5f04b2bff101951d84",
     "manifests/users.pp": "754f3dc38918eb403f1153d1d6cd1e1e",
     "spec/spec_helper.rb": "09ccbe4bbe4503df6281e6ec7977973d",
     "templates/xml.erb": "1816310843569de617fcdb8009cd3265",

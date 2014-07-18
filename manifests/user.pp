@@ -145,7 +145,7 @@ define windows_ad::user(
     }
     if ($writetoxmlflag == true){
       exec { "Add to XML - ${accountname}":
-        command  => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$subel = \$xml.CreateElement('user');(\$xml.configuration.GetElementsByTagName('users')).AppendChild(\$subel);\$name = \$xml.CreateAttribute('name');\$name.Value = '${accountname}';\$password = \$xml.CreateAttribute('password');\$password.Value = '${pwd}';\$subel.Attributes.Append(\$name);\$subel.Attributes.Append(\$password);\$xml.save('${xmlpath}');",
+        command  => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$subel = \$xml.CreateElement('user');(\$xml.configuration.GetElementsByTagName('users')).AppendChild(\$subel);\$name = \$xml.CreateAttribute('name');\$name.Value = '${accountname}';\$password = \$xml.CreateAttribute('password');\$password.Value = '${pwd}';\$fullname = \$xml.CreateAttribute('fullname');\$fullname.value = '${fullnamevalue}';\$subel.Attributes.Append(\$name);\$subel.Attributes.Append(\$password);\$subel.Attributes.Append(\$fullname);\$xml.save('${xmlpath}');",
         provider => powershell,
         onlyif   => "[xml]\$xml = New-Object system.Xml.XmlDocument;[xml]\$xml = Get-Content '${xmlpath}';\$exist=\$false;foreach(\$user in \$xml.configuration.users.user){if(\$user.name -eq '${accountname}'){\$exist=\$true}}if(\$exist -eq \$True){exit 1}",
         require  => [Exec["Add User - ${accountname}"],File[$xmlpath]],
