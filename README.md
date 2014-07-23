@@ -227,16 +227,16 @@ License
 -------
 Apache License, Version 2.0
 
-Contact
+Contributors
 -------
+
 [Jerome RIVIERE](http://www.jerome-riviere.re)
 
-Contributors : 
  + V 0.0.9 :
    - [shawnhall](https://github.com/shawnhall)  -> Pull Request #1
 
 Support
 -------
 
-Please log tickets and issues on [GitHub site](https://github.com/ninja-2/windows_ad/issues)
+Please log tickets and issues on [GitHub site](https://github.com/insentia/windows_ad/issues)
 
