@@ -107,7 +107,7 @@ define windows_ad::user(
       $fullnamevalue = $fullname
     }
 
-	if(!empty($emailaddress)){$emailaddressparam = "-EmailAddress '$emailaddress'"}
+    if(!empty($emailaddress)){$emailaddressparam = "-EmailAddress '$emailaddress'"}
     if(!empty($fullnamevalue)){$fullnameparam = "-DisplayName '$fullnamevalue'"}
     if(!empty($description)){$descriptionparam = "-Description '${description}'"}
     if(!empty($firstname)){$givenparam = "-GivenName '${firstname}'"}
@@ -137,7 +137,7 @@ define windows_ad::user(
       command     => "import-module activedirectory;Set-ADUser -identity ${accountname} ${fullnameparam} ${givenparam} ${lastnameparam} ${descriptionparam} ${emailaddressparam} -PasswordNeverExpires $${passwordneverexpires} -Enabled $${enabled};",
       onlyif      => "\$user = Get-ADUser -Identity '${accountname}' -Properties *;if((dsquery.exe user -samid ${accountname}) -and (('${description}' -ne \$user.Description -and '${description}' -ne '') -or (('${firstname}' -ne \$user.GivenName) -and ('${firstname}' -ne '')) -or (('${lastname}' -ne \$user.Surname) -and ('${lastname}' -ne '')) -or (('${emailaddress}' -ne \$user.EmailAddress) -and ('${emailaddress}' -ne '')) -or ('${fullnamevalue}' -ne \$user.DisplayName))){}else{exit 1}",
       provider    => powershell,
-    }	
+    }
     exec { "Add User - ${accountname}":
       command     => "import-module servermanager;add-windowsfeature -name 'rsat-ad-powershell' -includeAllSubFeature;import-module activedirectory;New-ADUser -name '${fullnamevalue}' -DisplayName '${fullnamevalue}' ${givenparam} ${lastnameparam} ${emailaddressparam} -Samaccountname '${accountname}' -UserPrincipalName '${userprincipalname}' -Description '${description}' -PasswordNeverExpires $${passwordneverexpires} -path '${path}' -AccountPassword (ConvertTo-SecureString '${pwd}' -AsPlainText -force) -Enabled $${enabled};",
       onlyif      => "\$oustring = '${path}' -replace '\"','';if((dsquery.exe user -samid ${accountname}) -or ([adsi]::Exists(\"LDAP://\$oustring\") -eq \$false)){exit 1}",
