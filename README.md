@@ -21,8 +21,9 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.1.5 :
- - update XML -> Add Fullname property.
+V 0.1.6 :
+ - update user.pp -> remove tabs, and space
+ - update module file -> remove accent
 
 ##Module Description
 
@@ -72,7 +73,6 @@ Example - Create a new forest
 	  logpath                => 'c:\\windows\\ntds',
 	  sysvolpath             => 'c:\\windows\\sysvol',
 	  installtype            => 'domain',
-	  secure_string_pwd      => 'password',
 	  dsrmpassword           => 'password',
 	  installdns             => 'yes',
 	  localadminpassword     => 'password',
@@ -229,7 +229,7 @@ Apache License, Version 2.0
 
 Contact
 -------
-[Jerome RIVIERE](http://www.jerome-riviere.re)
+[Jerome RIVIERE](https://github.com/ninja-2)
 
 Contributors : 
  + V 0.0.9 :
@@ -238,5 +238,5 @@ Contributors :
 Support
 -------
 
-Please log tickets and issues on [GitHub site](https://github.com/ninja-2/windows_ad/issues)
+Please log tickets and issues on [GitHub site](https://github.com/insentia/windows_ad/issues)
 

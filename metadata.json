@@ -1,24 +1,15 @@
 {
   "name": "jriviere-windows_ad",
-  "version": "0.1.5",
-  "source": "https://github.com/ninja-2/windows_ad",
-  "author": "Jérôme RIVIERE www.jerome-riviere.re",
-  "license": "Apache License, Version 2.0",
+  "version": "0.1.6",
+  "author": "Jerome RIVIERE www.jerome-riviere.re",
   "summary": "Puppet module to install and configure a Windows DC (2012 R2) and manipulate object in Active directory ",
+  "license": "Apache License, Version 2.0",
+  "source": "https://github.com/ninja-2/windows_ad",
+  "project_page": "https://github.com/insentia/windows_ad",
+  "issues_url": "https://github.com/insentia/windows_ad/issues",
   "description": "Puppet module to install and configure a Windows Domain Controller (2012 R2) and manipulate object in Active directory",
-  "project_page": "https://github.com/ninja-2/windows_ad",
-  "dependencies": [
-    {
-      "name": "joshcooper/powershell",
-      "version_requirement": ">=0.0.6"
-    },
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.2.1"
-    }
-  ],
   "types": [
-
+  
   ],
   "operatingsystem_support": [
     {
@@ -43,5 +34,15 @@
     "spec/spec_helper.rb": "09ccbe4bbe4503df6281e6ec7977973d",
     "templates/xml.erb": "1816310843569de617fcdb8009cd3265",
     "tests/init.pp": "ef9d5695a325a402570138b948c9d582"
-  }
+  },
+  "dependencies": [
+    {
+      "name": "joshcooper/powershell",
+      "version_requirement": ">=0.0.6"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.2.1"
+    }
+  ]
 }
