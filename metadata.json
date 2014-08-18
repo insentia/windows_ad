@@ -1,10 +1,10 @@
 {
   "name": "jriviere-windows_ad",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": "Jerome RIVIERE www.jerome-riviere.re",
   "summary": "Puppet module to install and configure a Windows DC (2012 R2) and manipulate object in Active directory ",
   "license": "Apache License, Version 2.0",
-  "source": "https://github.com/ninja-2/windows_ad",
+  "source": "https://github.com/insentia/windows_ad",
   "project_page": "https://github.com/insentia/windows_ad",
   "issues_url": "https://github.com/insentia/windows_ad/issues",
   "description": "Puppet module to install and configure a Windows Domain Controller (2012 R2) and manipulate object in Active directory",
