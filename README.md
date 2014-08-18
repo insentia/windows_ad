@@ -21,9 +21,8 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.1.6 :
- - update user.pp -> remove tabs, and space
- - update module file -> remove accent
+V 0.1.7 :
+ - change joshcooper/powershell module to puppetlabs/powershell ([Hobbit71](https://github.com/Hobbit71))
 
 ##Module Description
 
@@ -49,7 +48,7 @@ Adding multiple users it's possible with or WITHOUT parser=future parameter. Ple
 
 
 Depends on the following modules:
- - ['joshcooper/powershell', '>=0.0.6'](https://forge.puppetlabs.com/joshcooper/powershell),
+ - ['puppetlabs/powershell', '>=0.0.6'](https://forge.puppetlabs.com/joshcooper/powershell),
  - ['puppetlabs/stdlib', '>= 4.2.1'](https://forge.puppetlabs.com/puppetlabs/stdlib)
 
 ##Usage
