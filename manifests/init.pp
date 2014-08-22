@@ -62,9 +62,6 @@ class windows_ad (
   $usersingroup              = undef,
   $usersingroup_hiera_merge  = true,
 ) {
-  contain windows_ad::install
-  contain windows_ad::conf_forest
-  
   # when present install process will be set. if already install nothing done
   # when absent uninstall will be launch
   validate_re($install, '^(present|absent)$', 'valid values for install are \'present\' or \'absent\'')
