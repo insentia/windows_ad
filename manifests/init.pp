@@ -62,7 +62,9 @@ class windows_ad (
   $usersingroup              = undef,
   $usersingroup_hiera_merge  = true,
 ) {
-
+  contain windows_ad::install
+  contain windows_ad::conf_forest
+  
   # when present install process will be set. if already install nothing done
   # when absent uninstall will be launch
   validate_re($install, '^(present|absent)$', 'valid values for install are \'present\' or \'absent\'')
@@ -102,16 +104,16 @@ class windows_ad (
   }
   if($installflag or $configureflag){
     if($install == 'present'){
-      Class['windows_ad::install'] -> Class['windows_ad::conf_forest'] -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |>
+      anchor{'windows_ad::begin':} -> Class['windows_ad::install'] -> Class['windows_ad::conf_forest'] -> anchor{'windows_ad::end':} -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |>
     }else{
       if($configure == present){
         fail('You can\'t desactivate the Role ADDS without uninstall ADDSControllerDomain first')
       }else{
-        Class['windows_ad::conf_forest'] -> Class['windows_ad::install']
+        anchor{'windows_ad::begin':} -> Class['windows_ad::conf_forest'] -> Class['windows_ad::install'] -> anchor{'windows_ad::end':} 
       }
     }
   }else{
-    Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |>
+    anchor{'windows_ad::begin':} -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |> -> anchor{'windows_ad::end':}
   }
 
   if type($groups_hiera_merge) == 'string' {
