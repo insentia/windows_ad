@@ -11,7 +11,7 @@ Returns a random password with at least a number, a uppercase, a lowercase, a sp
   ) do |args|
     raise(Puppet::ParseError, "get_random_password(): Wrong number of arguments " +
       "given (#{args.size} for 1)") if args.size != 1
-    specials = ((33..33).to_a + (35..38).to_a + (40..47).to_a + (58..64).to_a + (91..93).to_a + (95..95).to_a + (123..125).to_a).pack('U*').chars.to_a
+    specials = ((33..33).to_a + (35..38).to_a + (40..47).to_a + (58..59).to_a + (61..61).to_a + (63..64).to_a + (91..93).to_a + (95..95).to_a + (123..125).to_a).pack('U*').chars.to_a
     numbers = (0..9).to_a
     alphals = ('a'..'z').to_a
     alphaus = ('A'..'Z').to_a
