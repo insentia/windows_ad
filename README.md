@@ -195,9 +195,9 @@ For adding a Group :
 ```
 	windows_ad::group{'test':
 	  ensure               => present,
-	  domainname           => 'jre.local',
+	  displayname          => 'Test',
 	  path                 => 'CN=Users,DC=JRE,DC=LOCAL',
-	  groupname            => 'groupplop',
+	  groupname            => 'test',
 	  groupscope           => 'Global',
 	  groupcategory        => 'Security',
 	  description          => 'desc group',
