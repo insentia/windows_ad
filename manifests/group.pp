@@ -24,7 +24,7 @@
 #
 #  windows_ad::group{'test':
 #    ensure               => present,
-#    domainname           => 'jre.local',
+#    displayname          => 'Test',
 #    path                 => 'OU=PLOP,DC=JRE,DC=LOCAL',
 #    groupname            => 'test',
 #    groupscope           => 'Universal',
