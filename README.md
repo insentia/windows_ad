@@ -21,8 +21,8 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.3.0 :
- - Fix add user. (dsquery.exe doesn't seem to work anymore)
+V 0.3.1 :
+ - Fix add user. (dsquery.exe doesn't seem to work anymore) - Works with fullname value
  - Add Pull Request #8 (fix readme for Group)
 
 ##Module Description
