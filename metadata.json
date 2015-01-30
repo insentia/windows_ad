@@ -1,6 +1,6 @@
 {
   "name": "jriviere-windows_ad",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Jerome RIVIERE www.jerome-riviere.re",
   "summary": "Puppet module to install and configure a Windows DC (2012 R2) and manipulate object in Active directory ",
   "license": "Apache License, Version 2.0",

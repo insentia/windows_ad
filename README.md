@@ -24,6 +24,8 @@ Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubu
 V 0.3.1 :
  - Fix add user. (dsquery.exe doesn't seem to work anymore) - Works with fullname value
  - Add Pull Request #8 (fix readme for Group)
+V 0.3.2 :
+ - Fix add group and groupmember dsquery.exe doesn't seem to work anymore).
 
 ##Module Description
 
