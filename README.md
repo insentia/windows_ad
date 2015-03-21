@@ -21,9 +21,11 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
-V 0.1.6 :
- - update user.pp -> remove tabs, and space
- - update module file -> remove accent
+V 0.3.1 :
+ - Fix add user. (dsquery.exe doesn't seem to work anymore) - Works with fullname value
+ - Add Pull Request #8 (fix readme for Group)
+V 0.3.2 :
+ - Fix add group and groupmember dsquery.exe doesn't seem to work anymore).
 
 ##Module Description
 
@@ -196,9 +198,9 @@ For adding a Group :
 ```
 	windows_ad::group{'test':
 	  ensure               => present,
-	  domainname           => 'jre.local',
+	  displayname          => 'Test',
 	  path                 => 'CN=Users,DC=JRE,DC=LOCAL',
-	  groupname            => 'groupplop',
+	  groupname            => 'test',
 	  groupscope           => 'Global',
 	  groupcategory        => 'Security',
 	  description          => 'desc group',
@@ -220,7 +222,7 @@ Otherwise, if you let in the list of the members you want to delete and put ensu
 
 
 ### Known issues
-Password issues Fix with version 0.1.4
+
 - If you update the FullName the XML file will not be updated.
 
 License
@@ -233,6 +235,7 @@ Contributors
 
  + V 0.0.9 :
    - [shawnhall](https://github.com/shawnhall)  -> Pull Request #1
+   - [grafjo](https://github.com/insentia/windows_ad/pulls/grafjo) -> Pull Request #9
 
 Support
 -------

@@ -140,7 +140,7 @@ define windows_ad::user(
     }
     exec { "Add User - ${accountname}":
       command     => "import-module servermanager;add-windowsfeature -name 'rsat-ad-powershell' -includeAllSubFeature;import-module activedirectory;New-ADUser -name '${fullnamevalue}' -DisplayName '${fullnamevalue}' ${givenparam} ${lastnameparam} ${emailaddressparam} -Samaccountname '${accountname}' -UserPrincipalName '${userprincipalname}' -Description '${description}' -PasswordNeverExpires $${passwordneverexpires} -path '${path}' -AccountPassword (ConvertTo-SecureString '${pwd}' -AsPlainText -force) -Enabled $${enabled};",
-      onlyif      => "\$oustring = '${path}' -replace '\"','';if((dsquery.exe user -samid ${accountname}) -or ([adsi]::Exists(\"LDAP://\$oustring\") -eq \$false)){exit 1}",
+      onlyif      => "\$oustring = \"CN=${fullnamevalue},${path}\"; if([adsi]::Exists(\"LDAP://\$oustring\")){exit 1}",
       provider    => powershell,
     }
     if ($writetoxmlflag == true){
