@@ -51,7 +51,7 @@ Adding multiple users it's possible with or WITHOUT parser=future parameter. Ple
 
 
 Depends on the following modules:
- - ['joshcooper/powershell', '>=0.0.6'](https://forge.puppetlabs.com/joshcooper/powershell),
+ - ['puppetlabs/powershell', '>=1.0.2'](https://forge.puppetlabs.com/puppetlabs/powershell),
  - ['puppetlabs/stdlib', '>= 4.2.1'](https://forge.puppetlabs.com/puppetlabs/stdlib)
 
 ##Usage
