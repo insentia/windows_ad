@@ -70,7 +70,7 @@ class windows_ad (
   validate_re($configure, '^(present|absent)$', 'valid values for configure are \'present\' or \'absent\'')
   validate_bool($configureflag)
   validate_bool($installflag)
-  
+
   class{'windows_ad::install':
     ensure                 => $install,
     installmanagementtools => $installmanagementtools,
@@ -106,14 +106,14 @@ class windows_ad (
       if($configure == present){
         fail('You can\'t desactivate the Role ADDS without uninstall ADDSControllerDomain first')
       }else{
-        anchor{'windows_ad::begin':} -> Class['windows_ad::conf_forest'] -> Class['windows_ad::install'] -> anchor{'windows_ad::end':} 
+        anchor{'windows_ad::begin':} -> Class['windows_ad::conf_forest'] -> Class['windows_ad::install'] -> anchor{'windows_ad::end':}
       }
     }
   }else{
     anchor{'windows_ad::begin':} -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |> -> anchor{'windows_ad::end':}
   }
 
-  if type($groups_hiera_merge) == 'string' {
+  if type3x($groups_hiera_merge) == 'string' {
     $groups_hiera_merge_real = str2bool($groups_hiera_merge)
   } else {
     $groups_hiera_merge_real = $groups_hiera_merge
@@ -130,7 +130,7 @@ class windows_ad (
     create_resources('windows_ad::group',$groups_real)
   }
 
-  if type($users_hiera_merge) == 'string' {
+  if type3x($users_hiera_merge) == 'string' {
     $users_hiera_merge_real = str2bool($users_hiera_merge)
   } else {
     $users_hiera_merge_real = $users_hiera_merge
@@ -147,7 +147,7 @@ class windows_ad (
     create_resources('windows_ad::user',$users_real)
   }
 
-  if type($usersingroup_hiera_merge) == 'string' {
+  if type3x($usersingroup_hiera_merge) == 'string' {
     $usersingroup_hiera_merge_real = str2bool($usersingroup_hiera_merge)
   } else {
     $usersingroup_hiera_merge_real = $usersingroup_hiera_merge

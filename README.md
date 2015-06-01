@@ -21,18 +21,20 @@ This module have been tested on Windows Server 2012 r2, should work on Windows S
 Puppet open source v3.5.1 and v3.6.2, the puppetmaster version is v3.4.3 (on ubuntu 14.04 LTS). Should work since version 3.5.1 of puppet
 
 ##Last Fix/Update
+V 0.3.3 :
+ - Fix compatibility with puppetlabs/stdlib v4.6.0 by replacing type() with type3x() calls.
+V 0.3.2 :
+ - Fix add group and groupmember dsquery.exe doesn't seem to work anymore).
 V 0.3.1 :
  - Fix add user. (dsquery.exe doesn't seem to work anymore) - Works with fullname value
  - Add Pull Request #8 (fix readme for Group)
-V 0.3.2 :
- - Fix add group and groupmember dsquery.exe doesn't seem to work anymore).
 
 ##Module Description
 
 For now, the module allow the installation and creation of new domain, in a new forest.
 You can also do :
 + Manage object in your AD :
- - User, 
+ - User,
  - Users,
  - OU,
  - Group,
@@ -44,7 +46,7 @@ You can also do :
 Your puppet.conf need to have this following line:
 ```
 	ordering=manifest
-``` 
+```
 
 For using windows_ad::users resource you need to put parser=future in your puppet.conf
 Adding multiple users it's possible with or WITHOUT parser=future parameter. Please read the next sections
@@ -52,7 +54,7 @@ Adding multiple users it's possible with or WITHOUT parser=future parameter. Ple
 
 Depends on the following modules:
  - ['puppetlabs/powershell', '>=1.0.2'](https://forge.puppetlabs.com/puppetlabs/powershell),
- - ['puppetlabs/stdlib', '>= 4.2.1'](https://forge.puppetlabs.com/puppetlabs/stdlib)
+ - ['puppetlabs/stdlib', '>= 4.6.0'](https://forge.puppetlabs.com/puppetlabs/stdlib)
 
 ##Usage
 
@@ -96,10 +98,10 @@ Parameters:
 	$sysvolpath           # Active Directory sysvol path
 	$dsrmpassword         # Directory Service Recovery Mode password
 	$localadminpassword   # password of local admin for remove DC.
-``` 
-Other install and configuration parameters can be set check the init.pp in manifests folder. 
+```
+Other install and configuration parameters can be set check the init.pp in manifests folder.
 
-For adding Organisational Unit : 
+For adding Organisational Unit :
 ```
 	windows_ad::organisationalunit{'PLOP':
 	  ensure       => present,
@@ -116,7 +118,7 @@ For adding a simple User :
 	  domainname           => 'jre.local',
 	  path                 => 'OU=PLOP,DC=JRE,DC=LOCAL',
 	  accountname          => 'test',
-	  lastname             => 'test',                   ## Not mandatory. But for this 2 parameters you need to declare at least one 
+	  lastname             => 'test',                   ## Not mandatory. But for this 2 parameters you need to declare at least one
 	  firstname            => 'test',                   ## or use fullname parameter !
 	  passwordneverexpires => true,
 	  passwordlength       => 15,                       # must be number so don't put ''
@@ -186,7 +188,7 @@ For adding multiple Users WITHOUT parser=future:
 		emailaddress         => 'test2@jre.local',
 	  },
 	}
-	
+
 	create_resources(windows_ad::user, $userhash)
 
 ```
@@ -218,7 +220,7 @@ For adding members to a Group :
 
 For the group members respect the syntax : '"samaccountname","samaccountname"' and if only one member :'"jre"'
 The module doesn't delete users if you let ensure to present, and modify only the members list
-Otherwise, if you let in the list of the members you want to delete and put ensure to absent, then the module will delete only the members in the list 
+Otherwise, if you let in the list of the members you want to delete and put ensure to absent, then the module will delete only the members in the list
 
 
 ### Known issues
@@ -241,4 +243,3 @@ Support
 -------
 
 Please log tickets and issues on [GitHub site](https://github.com/insentia/windows_ad/issues)
-

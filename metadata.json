@@ -1,6 +1,6 @@
 {
   "name": "jriviere-windows_ad",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "author": "Jerome RIVIERE www.jerome-riviere.re",
   "summary": "Puppet module to install and configure a Windows DC (2012 R2) and manipulate object in Active directory ",
   "license": "Apache License, Version 2.0",
@@ -9,7 +9,7 @@
   "issues_url": "https://github.com/insentia/windows_ad/issues",
   "description": "Puppet module to install and configure a Windows Domain Controller (2012 R2) and manipulate object in Active directory",
   "types": [
-  
+
   ],
   "operatingsystem_support": [
     {
@@ -38,11 +38,11 @@
   "dependencies": [
     {
       "name": "puppetlabs/powershell",
-      "version_requirement": ">=1.0.2"
+      "version_requirement": ">= 1.0.2"
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.2.1"
+      "version_requirement": ">= 4.6.0"
     }
   ]
 }
