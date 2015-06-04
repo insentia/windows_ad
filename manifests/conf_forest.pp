@@ -92,12 +92,16 @@ class windows_ad::conf_forest (
       }else {
         # Deploy Server 2008 R2 Active Directory
         exec { 'Config ADDS 2008':
-          command => "cmd.exe /c dcpromo /unattend /InstallDNS:yes /confirmGC:${globalcatalog} /NewDomain:forest /NewDomainDNSName:${domainname} /domainLevel:${domainlevel} /forestLevel:${forestlevel} /ReplicaOrNewDomain:domain /databasePath:${databasepath} /logPath:${logpath} /sysvolPath:${sysvolpath} /SafeModeAdminPassword:${dsrmpassword}",
+          command => "cmd.exe /c dcpromo /unattend /InstallDNS:yes /confirmGC:${globalcatalog} /NewDomain:forest /NewDomainDNSName:${domainname} /domainLevel:${domainlevel} /forestLevel:${forestlevel} /ReplicaOrNewDomain:domain /databasePath:${databasepath} /logPath:${logpath} /sysvolPath:${sysvolpath} /SafeModeAdminPassword:${dsrmpassword} /RebootOnCompletion:No",
           path    => 'C:\windows\sysnative',
           returns => [1,2,3,4],
           unless  => "sc \\\\${::fqdn} query ntds",
+          notify  => Reboot['after dcpromo'],
           timeout => $timeout,
         }
+      }
+      reboot { 'after dcpromo':
+        apply => immediately,
       }
     }else{ #uninstall AD
       if ($kernel_ver =~ /^6\.2|^6\.3/) {
