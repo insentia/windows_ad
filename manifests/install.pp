@@ -45,7 +45,8 @@ class windows_ad::install (
     if $installsubfeatures { $subfeatures = '-IncludeAllSubFeature' }
 
     if $::kernelversion =~ /^(6.1)/ and $installmanagementtools {
-      fail ('Windows 2012 or newer is required to use the installmanagementtools parameter')
+      notice ('Windows 2012 is required to use the installmanagementtools parameter')
+      $managementtools = ''
     } elsif $installmanagementtools {
       $managementtools = '-IncludeManagementTools'
     }
