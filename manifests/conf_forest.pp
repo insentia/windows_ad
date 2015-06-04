@@ -94,6 +94,7 @@ class windows_ad::conf_forest (
         exec { 'Config ADDS 2008':
           command => "cmd.exe /c dcpromo /unattend /InstallDNS:yes /confirmGC:${globalcatalog} /NewDomain:forest /NewDomainDNSName:${domainname} /domainLevel:${domainlevel} /forestLevel:${forestlevel} /ReplicaOrNewDomain:domain /databasePath:${databasepath} /logPath:${logpath} /sysvolPath:${sysvolpath} /SafeModeAdminPassword:${dsrmpassword}",
           path    => 'C:\windows\sysnative',
+          returns => [1,2,3,4],
           unless  => "sc \\\\${::fqdn} query ntds",
           timeout => $timeout,
         }
