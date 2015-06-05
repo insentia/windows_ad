@@ -9,7 +9,7 @@
   "issues_url": "https://github.com/insentia/windows_ad/issues",
   "description": "Puppet module to install and configure a Windows Domain Controller (2012 R2) and manipulate object in Active directory",
   "types": [
-  
+
   ],
   "operatingsystem_support": [
     {
@@ -43,6 +43,10 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 4.2.1"
+    },
+    {
+      "name": "puppetlabs/reboot",
+      "version_requirement": ">= 1.0.0"
     }
   ]
 }
