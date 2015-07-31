@@ -72,7 +72,6 @@ class windows_ad (
     dsrmpassword              => $dsrmpassword,
     installdns                => $installdns,
     kernel_ver                => $kernel_ver,
-    demoteoperationmasterrole => $demoteoperationmasterrole,
   }
   if($installflag ){
     if($install == 'present'){
