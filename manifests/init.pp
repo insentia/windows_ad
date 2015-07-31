@@ -38,13 +38,6 @@ class windows_ad (
 
   ### Part Configure AD - Forest
 
-  #uninstall forest
-  $localadminpassword        = undef,
-  $force                     = true,
-  $forceremoval              = true,
-  $uninstalldnsrole          = 'yes',
-  $demoteoperationmasterrole = true,
-
   ### Part Configure AD - Other
   $secure_string_pwd         = undef,
   $installtype               = undef,          # New domain or replica of existing domain {replica | domain}
