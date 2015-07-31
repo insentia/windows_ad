@@ -72,10 +72,6 @@ class windows_ad (
     dsrmpassword              => $dsrmpassword,
     installdns                => $installdns,
     kernel_ver                => $kernel_ver,
-    localadminpassword        => $localadminpassword,
-    force                     => $force,
-    forceremoval              => $forceremoval,
-    uninstalldnsrole          => $uninstalldnsrole,
     demoteoperationmasterrole => $demoteoperationmasterrole,
   }
   if($installflag ){
