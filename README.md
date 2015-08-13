@@ -191,11 +191,15 @@ For adding multiple Users WITHOUT parser=future:
 
 ```
 
-For adding multiple Users USING Hiera:
+For adding multiple Users USING Hiera and defaults:
 ```
 ---
 roles:
   -'windows_ad::create_users'
+windows_ad::create_users:hieraname: 'windows_ad::userlist'
+windows_ad::path: 'CN=Users,DC=domain,DC=com'
+windows_ad::description: 'Puppet added user.'
+windows_ad::passwordneverexpires: false
 windows_ad::userlist:
   joeuser:
     ensure: 'present'

@@ -1,9 +1,22 @@
-class windows_ad::create_users() {
+class windows_ad::create_users(
+  $hieraname = 'windows_ad::userlist',
+  $writetoxmlflag = false,
+  $path,
+  $passwordneverexpires = false,
+  $passwordlength = 14,
+  $password = 'Ch@ng3Th1sP@ss',
+  $description = 'Created User',
+) {
 
   $defaults = {
-    writetoxmlflag => false,
+    writetoxmlflag => $writetoxmlflag,
+    path => $path,
+    passwordneverexpires => $passwordneverexpires,
+    passwordlength => $passwordlength,
+    password => $password,
+    description => $description,
   }
 
-  $userhash = hiera('windows_ad::userlist')
+  $userhash = hiera($hieraname)
   create_resources(windows_ad::user, $userhash, $defaults)
 }
