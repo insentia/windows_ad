@@ -196,7 +196,7 @@ For adding multiple Users USING Hiera:
 ---
 roles:
   -'windows_ad::create_users'
-windwos_ad::userlist:
+windows_ad::userlist:
   joeuser:
     ensure: 'present'
     path: 'CN=Users,DC=domain,DC=com'
