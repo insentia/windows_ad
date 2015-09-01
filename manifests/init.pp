@@ -130,7 +130,7 @@ class windows_ad (
     create_resources('windows_ad::group',$groups_real)
   }
 
-  if type_of($users_hiera_merge) == String {
+  if type_of($users_hiera_merge) <= String {
     $users_hiera_merge_real = str2bool($users_hiera_merge)
   } else {
     $users_hiera_merge_real = $users_hiera_merge
@@ -147,7 +147,7 @@ class windows_ad (
     create_resources('windows_ad::user',$users_real)
   }
 
-  if type_of($usersingroup_hiera_merge) == String {
+  if type_of($usersingroup_hiera_merge) <= String {
     $usersingroup_hiera_merge_real = str2bool($usersingroup_hiera_merge)
   } else {
     $usersingroup_hiera_merge_real = $usersingroup_hiera_merge
