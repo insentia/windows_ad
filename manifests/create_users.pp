@@ -1,6 +1,7 @@
 class windows_ad::create_users(
   $hieraname = 'windows_ad::userlist',
   $writetoxmlflag = false,
+  $domainname,
   $path,
   $passwordneverexpires = false,
   $passwordlength = 14,
@@ -11,6 +12,7 @@ class windows_ad::create_users(
   $defaults = {
     writetoxmlflag => $writetoxmlflag,
     path => $path,
+    domainname => $domainname,
     passwordneverexpires => $passwordneverexpires,
     passwordlength => $passwordlength,
     password => $password,
