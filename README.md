@@ -191,6 +191,29 @@ For adding multiple Users WITHOUT parser=future:
 
 ```
 
+For adding multiple Users USING Hiera and defaults:
+```
+---
+roles:
+  -'windows_ad::create_users'
+windows_ad::create_users::hieraname: 'windows_ad::userlist'
+windows_ad::create_users::path: 'CN=Users,DC=domain,DC=com'
+windows_ad::create_users::domainname: 'domain.com'
+windows_ad::create_users::description: 'Puppet added user.'
+windows_ad::create_users::passwordneverexpires: false
+windows_ad::userlist:
+  joeuser:
+    ensure: 'present'
+    path: 'CN=Users,DC=domain,DC=com'
+    accountname: 'juser'
+    lastname: 'User'
+    firstname: 'Joe'
+    passwordneverexpires: true
+    passwordlength: 8
+    password: 'M1Gr3atP@ssw0rd'
+    fullanme: 'Joe User'
+```
+
 About password: the password will be auto-generated or now you can specify your own password (min 8 characters, one alpha, one numeric, one special characters at least)
 Passwords will be saved to users.xml on your c: drive (C:\users.xml)
 
