@@ -36,4 +36,6 @@ class windows_ad::params {
   $users_hiera_merge         = true
   $usersingroup              = undef
   $usersingroup_hiera_merge  = true
+
+  $timeout                   = 240
 }

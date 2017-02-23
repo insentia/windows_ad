@@ -62,6 +62,8 @@ class windows_ad (
   $users_hiera_merge         = $windows_ad::params::users_hiera_merge,
   $usersingroup              = $windows_ad::params::usersingroup,
   $usersingroup_hiera_merge  = $windows_ad::params::usersingroup_hiera_merge,
+
+  $timeout                   = $windows_ad::params::timeout
 ) inherits windows_ad::params {
   # when present install process will be set. if already install nothing done
   # when absent uninstall will be launch
@@ -71,7 +73,7 @@ class windows_ad (
   validate_re($configure, '^(present|absent)$', 'valid values for configure are \'present\' or \'absent\'')
   validate_bool($configureflag)
   validate_bool($installflag)
-  
+
   class{'windows_ad::install':
     ensure                 => $install,
     installmanagementtools => $installmanagementtools,
@@ -99,6 +101,7 @@ class windows_ad (
     uninstalldnsrole          => $uninstalldnsrole,
     demoteoperationmasterrole => $demoteoperationmasterrole,
     configureflag             => $configureflag,
+    timeout                   => $timeout
   }
   if($installflag or $configureflag){
     if($install == 'present'){
@@ -107,7 +110,7 @@ class windows_ad (
       if($configure == present){
         fail('You can\'t desactivate the Role ADDS without uninstall ADDSControllerDomain first')
       }else{
-        anchor{'windows_ad::begin':} -> Class['windows_ad::conf_forest'] -> Class['windows_ad::install'] -> anchor{'windows_ad::end':} 
+        anchor{'windows_ad::begin':} -> Class['windows_ad::conf_forest'] -> Class['windows_ad::install'] -> anchor{'windows_ad::end':}
       }
     }
   }else{
