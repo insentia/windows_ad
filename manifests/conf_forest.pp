@@ -52,7 +52,7 @@ class windows_ad::conf_forest (
   $dsrmpassword              = $dsrmpassword,
   $installdns                = $installdns,
   $kernel_ver                = $kernel_ver,
-  $timeout                   = 0,
+  $timeout                   = 240,
   $configureflag             = $configureflag,
 
   #removal parameters
