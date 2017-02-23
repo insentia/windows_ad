@@ -1,0 +1,9 @@
+fixtures:
+  symlinks:
+    profile: "#{source_dir}"
+  repositories:
+    stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib"
+    apache: "git://github.com/puppetlabs/puppetlabs-apache"
+    concat: "git://github.com/puppetlabs/puppetlabs-concat"
+    firewall: "git://github.com/puppetlabs/puppetlabs-firewall"
+    ntp: "git://github.com/puppetlabs/puppetlabs-ntp"

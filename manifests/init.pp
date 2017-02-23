@@ -27,14 +27,14 @@ class windows_ad (
   $configureflag             = $windows_ad::params::configureflag,       # Flag to bypass the configuration of AD if desired
   #level AD
   $domainlevel               = $windows_ad::params::domainlevel,         # Domain level {4 - Server 2008 R2 | 5 - Server 2012 | 6 - Server 2012 R2}
-  $forestlevel               = $windows_ad::params::forestlevel      # Domain level {4 - Server 2008 R2 | 5 - Server 2012 | 6 - Server 2012 R2}
+  $forestlevel               = $windows_ad::params::forestlevel,      # Domain level {4 - Server 2008 R2 | 5 - Server 2012 | 6 - Server 2012 R2},
 
   $installdns                = $windows_ad::params::installdns,                 # Add DNS Server Role
-  $globalcatalog             = $windows_ad::params::globalcatalog.                 # Add Global Catalog functionality
+  $globalcatalog             = $windows_ad::params::globalcatalog,                 # Add Global Catalog functionality
   $kernel_ver                = $windows_ad::params::kernel_ver,
 
   # Installation Directories
-  $databasepath              = $windows_ad::params::databsepath,   # Active Directory database path
+  $databasepath              = $windows_ad::params::databasepath,   # Active Directory database path
   $logpath                   = $windows_ad::params::logpath,   # Active Directory log path
   $sysvolpath                = $windows_ad::params::sysvolpath, # Active Directory sysvol path
 
