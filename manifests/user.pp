@@ -46,10 +46,12 @@
 # === Authors
 #
 # Jerome RIVIERE (www.jerome-riviere.re)
+# Karol Kozakowski (cosaquee.com)
 #
 # === Copyright
 #
 # Copyright 2014 Jerome RIVIERE.
+# Copyright 2017 Karol Kozakowski <cosaquee@gmail.com>
 #
 define windows_ad::user(
   $domainname,
@@ -91,26 +93,43 @@ define windows_ad::user(
       }
     }
   }
-  if($ensure == 'present'){
-    if(empty($fullname)){
-      if(empty($lastname) and !empty($firstname)){
+  if ($ensure == 'present') {
+    if (empty($fullname)) {
+      if (empty($lastname) and !empty($firstname)) {
         $fullnamevalue = $firstname
       }
-      if(!empty($lastname) and empty($firstname)){
+
+      if (!empty($lastname) and empty($firstname)) {
         $fullnamevalue = $lastname
       }
-      if(!empty($lastname) and !empty($firstname)){
+
+      if (!empty($lastname) and !empty($firstname)) {
         $fullnamevalue = "${firstname} ${lastname}"
       }
-    }else{
+
+    } else {
       $fullnamevalue = $fullname
     }
 
-    if(!empty($emailaddress)){$emailaddressparam = "-EmailAddress '$emailaddress'"}
-    if(!empty($fullnamevalue)){$fullnameparam = "-DisplayName '$fullnamevalue'"}
-    if(!empty($description)){$descriptionparam = "-Description '${description}'"}
-    if(!empty($firstname)){$givenparam = "-GivenName '${firstname}'"}
-    if(!empty($lastname)){$lastnameparam = "-SurName '${lastname}'"}
+    if (!empty($emailaddress)) {
+      $emailaddressparam = "-EmailAddress '${emailaddress}'"
+    }
+
+    if (!empty($fullnamevalue)) {
+      $fullnameparam = "-DisplayName '${fullnamevalue}'"
+    }
+
+    if (!empty($description)) {
+      $descriptionparam = "-Description '${description}'"
+    }
+
+    if (!empty($firstname)) {
+      $givenparam = "-GivenName '${firstname}'"
+    }
+
+    if (!empty($lastname)) {
+      $lastnameparam = "-SurName '${lastname}'"
+    }
 
     if(empty($password)){
     $pwd = get_random_password($passwordlength)
@@ -127,6 +146,7 @@ define windows_ad::user(
     }
 
     $userprincipalname = "${accountname}@${domainname}"
+
     exec { "Delete User Desc - ${accountname}":
       command     => "import-module activedirectory;\$user = Get-ADUser -Identity '${accountname}' -Properties Description;Set-ADUser -identity ${accountname} -Remove @{description=\$user.description}",
       onlyif      => "\$user = Get-ADUser -Identity '${accountname}' -Properties *;if((dsquery.exe user -samid ${accountname}) -and ('${description}' -ne \$user.Description -and \$user.Description -ne \$null)){}else{exit 1}",
