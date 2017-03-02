@@ -52,10 +52,10 @@
 # Copyright 2014 Jerome RIVIERE.
 #
 define windows_ad::user(
+  $domainname,
+  $path,
+  $accountname,
   $ensure               = present,                            # add or delete user
-  $domainname           = $domainname,                        # the domain name like : jre.local
-  $path                 = $path,                              # where is located the account
-  $accountname          = $accountname,                       # is samaccountname
   $lastname             = '',                                 # is lastname
   $firstname            = '',                                 # is firstname
   $fullname             = '',                                 # is fullname
@@ -68,7 +68,6 @@ define windows_ad::user(
   $writetoxmlflag       = true,                               # Flag that makes writing to the users.xml optional
   $xmlpath              = 'C:\\users.xml',                    # file where to save user info. Default set to C:\\users.xml
 
-# delete user
   $confirmdeletion      = false,                              # delete wihtout confirmation
 ){
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
