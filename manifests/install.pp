@@ -20,17 +20,19 @@
 # === Authors
 #
 # Jerome RIVIERE (www.jerome-riviere.re)
+# Karol Kozakowski <cosaquee@gmail.com>
 #
 # === Copyright
 #
 # Copyright 2014 Jerome RIVIERE.
+# Copyright 2017 Karol Kozakowski <cosaquee@gmail.com>
 #
 class windows_ad::install (
-    $ensure = $ensure,
-    $installmanagementtools = $installmanagementtools,
-    $installsubfeatures = $installsubfeatures,
-    $restart = $restart,
-    $installflag = $installflag,
+    $ensure,
+    $installmanagementtools,
+    $installsubfeatures,
+    $restart,
+    $installflag,
 ) {
 
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
