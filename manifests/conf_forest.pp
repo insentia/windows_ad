@@ -100,9 +100,9 @@ class windows_ad::conf_forest (
         }
       }else {
         # Deploy Server 2008 R2 Active Directory
-        exec { 'Config ADDS 2008':
+        exec { 'Config ADDS 2016':
           command => "cmd.exe /c dcpromo /unattend /InstallDNS:yes /confirmGC:${globalcatalog} /NewDomain:forest /NewDomainDNSName:${domainname} /domainLevel:${domainlevel} /forestLevel:${forestlevel} /ReplicaOrNewDomain:domain /databasePath:${databasepath} /logPath:${logpath} /sysvolPath:${sysvolpath} /SafeModeAdminPassword:${dsrmpassword}",
-          path    => 'C:\windows\sysnative',
+          path    => 'C:\windows\System32',
           unless  => "sc \\\\${::fqdn} query ntds",
           timeout => $timeout,
         }
@@ -128,7 +128,7 @@ class windows_ad::conf_forest (
         # uninstall Server 2008 R2 Active Directory -> not tested
         exec { 'Uninstall ADDS 2008':
           command => "cmd.exe /c dcpromo /forceremoval",
-          path    => 'C:\windows\sysnative',
+          path    => 'C:\windows\System32',
           unless  => "sc \\\\${::fqdn} query ntds",
           timeout => $timeout,
         }
