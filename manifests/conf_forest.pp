@@ -67,11 +67,11 @@ class windows_ad::conf_forest (
     if $forceremoval { $forceboolremoval = 'true' } else { $forceboolremoval = 'false' }
     if $demoteoperationmasterrole { $demoteoperationmasterrolebool = 'true' } else { $demoteoperationmasterrolebool = 'false' }
 
-    # If the operating is server 2012 then run the appropriate powershell commands if not revert back to the cmd commands
+    # If the operating is server 2012 or 2016 then run the appropriate powershell commands if not revert back to the cmd commands
     if ($ensure == 'present') {
-      if ($kernel_ver =~ /^6\.2|^6\.3/) {
+      if ($kernel_ver =~ /^6\.2|^6\.3|^10\.0/) {
         if ($installdns == 'yes'){
-          # Deploy Server 2012 Active Directory
+          # Deploy Server 2016 Active Directory
           class { 'windows_ad::deployments::adds_deployment_powershell':
             type              => 'ntp',
             domainname        => $domainname,
@@ -100,15 +100,15 @@ class windows_ad::conf_forest (
         }
       }else {
         # Deploy Server 2008 R2 Active Directory
-        exec { 'Config ADDS 2016':
+        exec { 'Config ADDS 2008':
           command => "cmd.exe /c dcpromo /unattend /InstallDNS:yes /confirmGC:${globalcatalog} /NewDomain:forest /NewDomainDNSName:${domainname} /domainLevel:${domainlevel} /forestLevel:${forestlevel} /ReplicaOrNewDomain:domain /databasePath:${databasepath} /logPath:${logpath} /sysvolPath:${sysvolpath} /SafeModeAdminPassword:${dsrmpassword}",
-          path    => 'C:\windows\System32',
+          path    => 'C:\windows\sysnative',
           unless  => "sc \\\\${::fqdn} query ntds",
           timeout => $timeout,
         }
       }
     }else{ #uninstall AD
-      if ($kernel_ver =~ /^6\.2|^6\.3/) {
+      if ($kernel_ver =~ /^6\.2|^6\.3|^10\.0/) {
         if($localadminpassword != ''){
           exec { 'Uninstall ADDS':
             command     => "Import-Module ADDSDeployment;Uninstall-ADDSDomainController -LocalAdministratorPassword (ConvertTo-SecureString \'${localadminpassword}\' -asplaintext -force) -Force:$${forcebool} -ForceRemoval:$${forceboolremoval} -DemoteOperationMasterRole:$${demoteoperationmasterrolebool} -SkipPreChecks",
@@ -128,7 +128,7 @@ class windows_ad::conf_forest (
         # uninstall Server 2008 R2 Active Directory -> not tested
         exec { 'Uninstall ADDS 2008':
           command => "cmd.exe /c dcpromo /forceremoval",
-          path    => 'C:\windows\System32',
+          path    => 'C:\windows\sysnative',
           unless  => "sc \\\\${::fqdn} query ntds",
           timeout => $timeout,
         }
