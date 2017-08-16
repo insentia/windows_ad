@@ -33,34 +33,33 @@
 # === Authors
 #
 # Jerome RIVIERE (www.jerome-riviere.re)
+# Karol Kozakowski <cosaquee@gmail.com>
 #
 # === Copyright
 #
 # Copyright 2014 Jerome RIVIERE.
+# Copyright 2017 Karol Kozakowski <cosaquee@gmail.com>
 #
 class windows_ad::conf_forest (
-  #install parameters
-  $ensure                    = $ensure,
-  $domainname                = $domainname,
-  $netbiosdomainname         = $netbiosdomainname,
-  $domainlevel               = $domainlevel,
-  $forestlevel               = $forestlevel,
-  $globalcatalog             = $globalcatalog,
-  $databasepath              = $databasepath,
-  $logpath                   = $logpath,
-  $sysvolpath                = $sysvolpath,
-  $dsrmpassword              = $dsrmpassword,
-  $installdns                = $installdns,
-  $kernel_ver                = $kernel_ver,
-  $timeout                   = 0,
-  $configureflag             = $configureflag,
-
-  #removal parameters
-  $localadminpassword        = $localadminpassword, #admin password required for removal
-  $force                     = $force,
-  $forceremoval              = $forceremoval,
-  $uninstalldnsrole          = $uninstalldnsrole,
-  $demoteoperationmasterrole = $demoteoperationmasterrole,
+  $ensure,
+  $domainname,
+  $netbiosdomainname,
+  $domainlevel,
+  $forestlevel,
+  $globalcatalog,
+  $databasepath,
+  $logpath,
+  $sysvolpath,
+  $dsrmpassword,
+  $installdns,
+  $kernel_ver,
+  $configureflag,
+  $localadminpassword,
+  $force,
+  $forceremoval,
+  $uninstalldnsrole,
+  $demoteoperationmasterrole,
+  $timeout,
 ){
   validate_bool($configureflag)
   if ($configureflag == true){
@@ -68,25 +67,35 @@ class windows_ad::conf_forest (
     if $forceremoval { $forceboolremoval = 'true' } else { $forceboolremoval = 'false' }
     if $demoteoperationmasterrole { $demoteoperationmasterrolebool = 'true' } else { $demoteoperationmasterrolebool = 'false' }
 
-    # If the operating is server 2012 then run the appropriate powershell commands if not revert back to the cmd commands
+    # If the operating is server 2012 or 2016 then run the appropriate powershell commands if not revert back to the cmd commands
     if ($ensure == 'present') {
-      if ($kernel_ver =~ /^6\.2|^6\.3/) {
+      if ($kernel_ver =~ /^6\.2|^6\.3|^10\.0/) {
         if ($installdns == 'yes'){
-          # Deploy Server 2012 Active Directory
-          exec { 'Config ADDS':
-            command     => "Import-Module ADDSDeployment; Install-ADDSForest -Force -DomainName ${domainname} -DomainMode ${domainlevel} -DomainNetbiosName ${netbiosdomainname} -ForestMode ${forestlevel} -DatabasePath ${databasepath} -LogPath ${logpath} -SysvolPath ${sysvolpath} -SafeModeAdministratorPassword (convertto-securestring '${dsrmpassword}' -asplaintext -force) -InstallDns",
-            provider    => powershell,
-            onlyif      => "if((gwmi WIN32_ComputerSystem).Domain -eq \'${domainname}\'){exit 1}",
-            timeout     => $timeout,
+          # Deploy Server 2016 Active Directory
+          class { 'windows_ad::deployments::adds_deployment_powershell':
+            type              => 'ntp',
+            domainname        => $domainname,
+            domainlevel       => $domainlevel,
+            netbiosdomainname => $netbiosdomainname,
+            forestlevel       => $forestlevel,
+            databasepath      => $databasepath,
+            logpath           => $logpath,
+            sysvolpath        => $sysvolpath,
+            dsrmpassword      => $dsrmpassword,
+            timeout           => $timeout
           }
-        }
-        else{
-          # Deploy Server 2012 Active Directory Without DNS
-          exec { 'Config ADDS':
-            command     => "Import-Module ADDSDeployment; Install-ADDSForest -Force -DomainName ${domainname} -DomainMode ${domainlevel} -DomainNetbiosName ${netbiosdomainname} -ForestMode ${forestlevel} -DatabasePath ${databasepath} -LogPath ${logpath} -SysvolPath ${sysvolpath} -SafeModeAdministratorPassword (convertto-securestring '${dsrmpassword}' -asplaintext -force)",
-            provider    => powershell,
-            onlyif      => "if((gwmi WIN32_ComputerSystem).Domain -eq \'${domainname}\'){exit 1}",
-            timeout     => $timeout,
+        } else{
+          class { 'windows_ad::deployments::adds_deployment_powershell':
+            type              => '',
+            domainname        => $domainname,
+            domainlevel       => $domainlevel,
+            netbiosdomainname => $netbiosdomainname,
+            forestlevel       => $forestlevel,
+            databasepath      => $databasepath,
+            logpath           => $logpath,
+            sysvolpath        => $sysvolpath,
+            dsrmpassword      => $dsrmpassword,
+            timeout           => $timeout
           }
         }
       }else {
@@ -99,7 +108,7 @@ class windows_ad::conf_forest (
         }
       }
     }else{ #uninstall AD
-      if ($kernel_ver =~ /^6\.2|^6\.3/) {
+      if ($kernel_ver =~ /^6\.2|^6\.3|^10\.0/) {
         if($localadminpassword != ''){
           exec { 'Uninstall ADDS':
             command     => "Import-Module ADDSDeployment;Uninstall-ADDSDomainController -LocalAdministratorPassword (ConvertTo-SecureString \'${localadminpassword}\' -asplaintext -force) -Force:$${forcebool} -ForceRemoval:$${forceboolremoval} -DemoteOperationMasterRole:$${demoteoperationmasterrolebool} -SkipPreChecks",

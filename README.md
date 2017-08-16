@@ -25,7 +25,7 @@ V 0.3.1 :
  - Fix add user. (dsquery.exe doesn't seem to work anymore) - Works with fullname value
  - Add Pull Request #8 (fix readme for Group)
 V 0.3.2 :
- - Fix add group and groupmember dsquery.exe doesn't seem to work anymore).
+ - Fix add group and group member dsquery.exe doesn't seem to work anymore).
 
 ##Module Description
 
@@ -209,7 +209,7 @@ For adding a Group :
 
 For adding members to a Group :
 ```
-	windows_ad::groupmembers{'Member groupplop':
+	windows_ad::group_members{'Member groupplop':
 	  ensure    => present,
 	  groupname => 'groupplop',
 	  members   => '"jre","test2"',

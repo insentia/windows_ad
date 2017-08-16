@@ -20,17 +20,19 @@
 # === Authors
 #
 # Jerome RIVIERE (www.jerome-riviere.re)
+# Karol Kozakowski <cosaquee@gmail.com>
 #
 # === Copyright
 #
 # Copyright 2014 Jerome RIVIERE.
+# Copyright 2017 Karol Kozakowski <cosaquee@gmail.com>
 #
 class windows_ad::install (
-    $ensure = $ensure,
-    $installmanagementtools = $installmanagementtools,
-    $installsubfeatures = $installsubfeatures,
-    $restart = $restart,
-    $installflag = $installflag,
+    $ensure,
+    $installmanagementtools,
+    $installsubfeatures,
+    $restart,
+    $installflag,
 ) {
 
   validate_re($ensure, '^(present|absent)$', 'valid values for ensure are \'present\' or \'absent\'')
@@ -51,7 +53,7 @@ class windows_ad::install (
     }
 
     # Windows 2008 R2 and newer required http://technet.microsoft.com/en-us/library/ee662309.aspx
-    if $::kernelversion !~ /^(6\.1|6\.2|6\.3)/ { fail ("${module_name} requires Windows 2008 R2 or newer") }
+    if $::kernelversion !~ /^(6\.1|6\.2|6\.3|10\.0)/ { fail ("${module_name} requires Windows 2008 R2 or newer") }
 
     # from Windows 2012 'Add-WindowsFeature' has been replaced with 'Install-WindowsFeature' http://technet.microsoft.com/en-us/library/ee662309.aspx
     if ($ensure == 'present') {
