@@ -105,7 +105,7 @@ class windows_ad (
   }
   if($installflag or $configureflag){
     if($install == 'present'){
-      anchor{'windows_ad::begin':} -> Class['windows_ad::install'] -> Class['windows_ad::conf_forest'] -> anchor{'windows_ad::end':} -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |>
+      anchor{'windows_ad::begin':} -> Class['windows_ad::install'] -> Class['windows_ad::conf_forest'] -> anchor{'windows_ad::end':} -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Group_members <| |>
     }else{
       if($configure == present){
         fail('You can\'t desactivate the Role ADDS without uninstall ADDSControllerDomain first')
@@ -114,7 +114,7 @@ class windows_ad (
       }
     }
   }else{
-    anchor{'windows_ad::begin':} -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Groupmembers <| |> -> anchor{'windows_ad::end':}
+    anchor{'windows_ad::begin':} -> Windows_ad::Organisationalunit <| |> -> Windows_ad::Group <| |> -> Windows_ad::User <| |> -> Windows_ad::Group_members <| |> -> anchor{'windows_ad::end':}
   }
 
   if type($groups_hiera_merge) == 'string' {
@@ -165,6 +165,6 @@ class windows_ad (
       $usersingroup_real = $usersingroup
     }
     validate_hash($usersingroup_real)
-    create_resources('windows_ad::groupmembers',$usersingroup_real)
+    create_resources('windows_ad::group_members',$usersingroup_real)
   }
 }
